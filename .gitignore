@@ -1,0 +1,17 @@
+# runtime state — personal data, tokens, caches
+state/
+
+# python
+__pycache__/
+*.pyc
+
+# macOS / other tools
+.DS_Store
+.bkit/
+
+# never track runtime json at root either
+/*.json
+/*.pid
+/*.bin
+
+!config.example.json
