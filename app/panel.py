@@ -458,6 +458,15 @@ class Bridge(NSObject):
         self.push()
 
     def userContentController_didReceiveScriptMessage_(self, ucc, msg):
+        # An exception escaping this callback aborts the whole process (pyobjc → ObjC throw).
+        try:
+            self.handle_message(msg)
+        except Exception:
+            import traceback
+            print("[bridge] unhandled exception:", file=sys.stderr)
+            traceback.print_exc()
+
+    def handle_message(self, msg):
         b = msg.body()
         a = str(b.get("action", ""))
         if a not in ("state", "pomo_title", "refresh_cal"):
@@ -522,10 +531,10 @@ class Bridge(NSObject):
             ko = get_settings()["lang"] == "ko"
             if mode == "work":
                 pomo_inc(int(b.get("mins", 25)))
-                notify("집중 세션 완료! 잠깐 쉬어가세요 ☕" if ko
+                todo.notify("집중 세션 완료! 잠깐 쉬어가세요 ☕" if ko
                        else "Focus session done! Take a break ☕", "Pomodoro")
             else:
-                notify("휴식 끝 — 다시 집중할 시간이에요 🍅" if ko
+                todo.notify("휴식 끝 — 다시 집중할 시간이에요 🍅" if ko
                        else "Break over — time to focus 🍅", "Pomodoro")
             snd = ASSETS / "singing-bowl.mp3"
             subprocess.Popen(["afplay", str(snd) if snd.exists()

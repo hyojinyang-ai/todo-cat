@@ -2,6 +2,10 @@
 
 Everything here was built pair-programming with Claude. Dates are actual working days.
 
+## 2026-09-25
+### Fixed
+- **App crashed when a Pomodoro session finished** (`NameError: notify` inside the WebKit message handler → pyobjc abort). Fixed the missing reference and wrapped the bridge callback so no Python exception can ever take the process down again; errors are now logged to `/tmp/claude-panel.log` instead.
+
 ## 2026-09-24
 ### Changed
 - **Made shareable**: `config.json` (vault path/name, language, schedule hours, claude path) replaces hardcoded personal paths; neutral identifiers (`com.todocat.app`, `com.todocat.panel`); tools take the source image as an argument; timezone auto-detected; interactive `install/setup.sh` that detects Obsidian vaults; MIT license; personal details removed from docs; git history squashed and repository made public.
