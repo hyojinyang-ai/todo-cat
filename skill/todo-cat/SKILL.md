@@ -26,7 +26,7 @@ git clone https://github.com/hyojinyang-ai/todo-cat ~/.claude-todo && ~/.claude-
 1. Edit with a Python patch script: `s.replace(old, new, 1)` guarded by `assert old in s`. Never rely on silent no-ops.
 2. `python3 -m py_compile ~/.claude-todo/app/panel.py ~/.claude-todo/app/todo.py`
 3. Restart with `scripts/deploy.sh` (kills **all** instances, clears the pid file, kickstarts via launchd). `launchctl kickstart -k` alone is not enough.
-4. Verify: `pgrep -f panel.py`, `tail /tmp/claude-panel.log`. For image work, render a check sheet on a checkerboard and look at it with `read_file` (downscale with `sips -Z 700` first).
+4. Verify: `pgrep -f panel.py`, `tail /tmp/claude-panel.log`. After touching the bridge or Pomodoro code run `python3 tests/smoke_pomodoro_end.py` (real WebKit → pyobjc round-trip; exit 0 = alive). For image work, render a check sheet on a checkerboard and look at it with `read_file` (downscale with `sips -Z 700` first).
 5. `git add -A && git commit -m "<what/why>" && git push`. Keep `CHANGELOG.md` current for user-visible changes.
 
 ## Common requests → where to look

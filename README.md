@@ -63,6 +63,7 @@ The artwork is in `assets/`. To swap in your own cat: `python3 tools/mksit.py <s
 - History: `CHANGELOG.md`.
 
 ## Development notes
+- Smoke test for the Pomodoro completion path (real WebKit bridge): `python3 tests/smoke_pomodoro_end.py` — exit 0 means no crash; it plays the end-of-session sound once
 - Redeploy: `skill/todo-cat/scripts/deploy.sh` (kills all instances, clears the pid file, restarts via launchd)
 - Images must be **RGBA PNG** — palette PNGs lose alpha on macOS
 - Never load SVG with NSImage (fills are ignored) — draw with AppKit or use PNG. Obsidian renders SVG fine, which is why the heatmap is SVG.
