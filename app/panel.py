@@ -374,12 +374,10 @@ class Pet:
         self.loaf = 0          # 0 = not loafing, 1..8 = loaf frame shown
         self.loaf_dir = 0      # +1 settling down, -1 getting up, 0 = still
         self.loaf_next = 0.0
-        self.pomo = False      # Pomodoro work session running
+        # (desktop cats are independent of the Pomodoro — rule 1 applies to the Pomodoro page only)
 
     def apply_image(self):
-        if self.state == "idle" and self.pomo:
-            base = "zen"       # rule: Pomodoro → singing-bowl cat (cats without one just sit)
-        elif self.state == "idle" and self.loaf:
+        if self.state == "idle" and self.loaf:
             base = f"loaf{self.loaf}"
         elif self.state == "idle" and self.moving:
             base = f"walk{(self.frame % 8) + 1}"
@@ -584,10 +582,7 @@ class Bridge(NSObject):
             self.pomo_text = str(b.get("text", ""))
             running = self.pomo_text.startswith("🍅")   # work session (☕ = break)
             if running != self.pomo_running:
-                self.pomo_running = running
-                for p in self.pets:
-                    p.pomo = running
-                    p.apply_image()
+                self.pomo_running = running   # menu-bar text only; pets ignore the Pomodoro
             if self.status is not None:
                 txt = self.pomo_text
                 AppHelper.callAfter(
@@ -871,7 +866,7 @@ def main():
         right = pf.origin.x + pf.size.width - cf.size.width - 6
         if right <= left:
             return
-        if ("loaf1" in p.imgs and not p.loaf and not p.loaf_dir and not p.pomo
+        if ("loaf1" in p.imgs and not p.loaf and not p.loaf_dir
                 and p.state == "idle" and now > bridge.pet_active_until
                 and now - bridge.pet_last_touch > loaf_after):
             p.loaf_dir = 1
@@ -883,8 +878,8 @@ def main():
                 print(f"[pet] {p.key} " + ("loafing" if p.loaf else "up"), file=sys.stderr)
             p.loaf_next = now + (0.25 if settling else 0.12)
             p.apply_image()
-        if now > bridge.pet_active_until or p.pomo or p.loaf or p.loaf_dir:
-            # idle, Pomodoro or loaf: sit still, follow the panel if it moves
+        if now > bridge.pet_active_until or p.loaf or p.loaf_dir:
+            # idle or loaf: sit still, follow the panel if it moves
             if p.moving:
                 p.moving = False
                 p.apply_image()

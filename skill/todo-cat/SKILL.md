@@ -8,7 +8,7 @@ description: Install, deploy, maintain and extend the todo-cat macOS app — a f
 Open-source personal productivity app (GitHub `hyojinyang-ai/todo-cat`), usually cloned to `~/.claude-todo`. Reply in the user's language, concisely; offer options when a request is ambiguous.
 
 ## Product rules (decided by the user — do not "improve" them away)
-1. **A Pomodoro means the cat sits with the singing bowl.** While a work session runs, both the Pomodoro page and the desktop pet show the singing-bowl cat (`assets/pomo_zen.png`, gently swaying with floating notes on the page). The walk cycle is reserved for to-do activity only; it never plays during a Pomodoro.
+1. **On the Pomodoro page, the cat sits with the singing bowl** (`assets/pomo_zen.png`, gently swaying with floating notes) — never the walk cycle. This applies to the Pomodoro page only: the desktop cats on the panel are independent of the timer and keep doing whatever they were doing (sit, walk after interaction, loaf).
 2. The pet sits idle on the panel and walks only for 60 s after a to-do interaction (add/complete/edit/click/typing). Pomodoro ticks and calendar refreshes are not activity. After `loaf_after` (config, default 5 min) without panel use, cats that have loaf frames settle into a loaf and get up on the next interaction — idle cats never start walking on their own.
 3. Obsidian output (Daily Log, Dashboard, retro) is bilingual ko/en; the UI follows the language setting.
 
