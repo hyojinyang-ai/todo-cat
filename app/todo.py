@@ -19,7 +19,8 @@ ROOT = Path(__file__).resolve().parents[1]
 STATE = ROOT / "state"
 CONFIG_FILE = ROOT / "config.json"
 DEFAULTS = {"vault_path": "~/Documents/todo-cat", "vault_name": "", "lang": "en",
-            "import_hour": 8, "eod_hour": 18, "claude_bin": "", "loaf_after": 300}
+            "import_hour": 8, "eod_hour": 18, "claude_bin": "", "loaf_after": 300,
+            "sound": "Purr"}   # a macOS system sound name (see /System/Library/Sounds) or a file path
 
 
 def load_config():

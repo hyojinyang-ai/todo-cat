@@ -2,8 +2,9 @@
 """Smoke test: a Pomodoro work session finishing must not crash the app.
 Loads the real panel.html into a real WKWebView with the real Bridge, forces the
 timer to end in ~2 s (fires pomo_done + pomo_title through WebKit → pyobjc), then exits.
-Exit code 0 = survived, 134/SIGABRT = the old crash."""
-import sys, threading, time
+Exit code 0 = survived, 134/SIGABRT = the old crash. Runs silently and does not touch the pomodoro log."""
+import os, sys, threading, time
+os.environ["TODOCAT_TEST"] = "1"   # no sound, no notification, no pomodoro logged
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "app"))
 import panel

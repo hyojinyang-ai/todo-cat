@@ -638,6 +638,8 @@ class Bridge(NSObject):
                 AppHelper.callAfter(
                     lambda: self.status.button().setTitle_(txt or " "))
         elif a == "pomo_done":
+            if os.environ.get("TODOCAT_TEST"):     # smoke tests: no log, no sound, no banner
+                self.push(); return
             mode = str(b.get("mode", "work"))
             ko = get_settings()["lang"] == "ko"
             if mode == "work":
@@ -647,9 +649,11 @@ class Bridge(NSObject):
             else:
                 todo.notify("휴식 끝 — 다시 집중할 시간이에요 🍅" if ko
                        else "Break over — time to focus 🍅", "Pomodoro")
-            snd = ASSETS / "singing-bowl.mp3"
-            subprocess.Popen(["afplay", str(snd) if snd.exists()
-                              else "/System/Library/Sounds/Glass.aiff"])
+            snd = str(todo.CFG.get("sound") or "Purr")
+            path = snd if "/" in snd else f"/System/Library/Sounds/{snd}.aiff"
+            if not Path(path).exists():
+                path = "/System/Library/Sounds/Purr.aiff"
+            subprocess.Popen(["afplay", "-v", "0.5", path])   # short, system-level, half volume
             self.push()
         elif a == "quit":
             NSApplication.sharedApplication().terminate_(None)

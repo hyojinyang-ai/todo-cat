@@ -30,6 +30,9 @@
 - Verify visually: composite on a checkerboard, `sips -Z 700`, `read_file`. Tool results over ~1 MB are rejected.
 - Coordinates: SVG/PIL are y-down, AppKit is y-up (`y' = H - y`). Retina `lockFocus` produces 2× pixel reps (`pixelsWide` ≠ `size()`).
 
+## Tests
+- The smoke test drives a *real* Pomodoro completion. Without `TODOCAT_TEST=1` it plays the sound and **logs a real pomodoro** — it inflated the user's daily count for days before anyone noticed. Any test that goes through `pomo_done` must keep that env var.
+
 ## pyobjc
 - **Any Python exception inside an ObjC callback (WKScriptMessageHandler, menu actions, delegates) aborts the process** with SIGABRT and *no traceback in the log* — the crash report shows `PyObjCErr_ToObjCWithGILState → objc_exception_throw → abort`. Keep callbacks wrapped in try/except that logs `traceback.print_exc()`; reproduce suspected handlers by calling them directly from a script with a fake `msg.body()`.
 - Method names on NSObject subclasses encode arity with trailing underscores: `runjs_(self, code)`. A 1-arg method without `_` raises BadPrototypeError at class creation.

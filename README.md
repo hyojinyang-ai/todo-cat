@@ -9,7 +9,7 @@ Built with Python (pyobjc) + WKWebView. No server, no account; everything lives 
 ## Features
 - **Floating panel** — add / edit / delete / complete tasks, category dropdown, drag to move, resize, opacity, Korean/English UI
 - **Calendar import** — at 08:00 today's events become *Meeting* tasks with their duration (via macOS Calendar/EventKit, or an ICS link)
-- **Pomodoro** — focus/break timer with the cat pacing beside you, singing-bowl sound at the end, remaining time in the menu bar
+- **Pomodoro** — focus/break timer with the cat pacing beside you, a short system sound when a session ends (Purr by default, configurable), remaining time in the menu bar
 - **Obsidian automation** — Daily Log (WORK SESSIONS / FOCUS / UNFINISHED / NEXT STEPS), a living Dashboard with a 16-week heatmap, monthly review page, and an 18:00 bilingual (ko/en) AI retro via Claude Code CLI
 - **Cat pet** — sits on the panel when idle, walks for 60 s after you interact, opens its eyes when you add a task and blushes when you complete one, settles into a loaf after 5 min without panel use (cats with loaf frames). Pick one or more cats in Settings → Cats
 - **Native citizen** — Dock icon, menu bar item, standard app menu (⌘C/⌘V work), close/minimize traffic lights, launches at login
@@ -21,7 +21,7 @@ todo-cat/
 │                 panel.html (single-file UI: Todo / Pomodoro / Settings, ko·en)
 │                 todo.py (data core, Obsidian writers, AI retro, CLI)
 ├── assets/       pets/<cat>/ per cat: sitting + expressions, 8 walk frames, 8 loaf frames (+ mirrored)
-│                 pomo_zen.png · singing-bowl.mp3
+│                 pomo_zen.png
 ├── tools/        mkframes.py, mksit.py — regenerate cat frames from source artwork (per cat folder)
 ├── install/      setup.sh · Info.plist · AppIcon.icns · LaunchAgent template
 ├── skill/        todo-cat/ — Claude skill: deploy, maintain, extend
@@ -42,6 +42,7 @@ Paths inside the app are resolved from the file location (`ROOT = parents[1]`), 
 - `import_hour` / `eod_hour` — when events become tasks and when the day auto-closes.
 - `loaf_after` — seconds without panel use before cats with loaf frames settle into a loaf (default 300).
 - `claude_bin` — path to the Claude Code CLI if it is not on `PATH` (AI retro only).
+- `sound` — name of a macOS system sound (`Purr`, `Glass`, `Ping`, … see `/System/Library/Sounds`) or a path to your own audio file; played at half volume when a session ends.
 
 ## Data (not in the repo)
 - `<vault>/Tracker/tasks.json`, `Tracker/{Log,Monthly,Retros}/`, `Dashboard.md`, `assets/heatmap.svg`
@@ -68,7 +69,7 @@ To build Sprout-style frames from artwork: `python3 tools/mksit.py <sitting-cat.
 - History: `CHANGELOG.md`.
 
 ## Development notes
-- Smoke test for the Pomodoro completion path (real WebKit bridge): `python3 tests/smoke_pomodoro_end.py` — exit 0 means no crash; it plays the end-of-session sound once
+- Smoke test for the Pomodoro completion path (real WebKit bridge): `python3 tests/smoke_pomodoro_end.py` — exit 0 means no crash; runs silently and does not log a pomodoro
 - Redeploy: `skill/todo-cat/scripts/deploy.sh` (kills all instances, clears the pid file, restarts via launchd)
 - Images must be **RGBA PNG** — palette PNGs lose alpha on macOS
 - Never load SVG with NSImage (fills are ignored) — draw with AppKit or use PNG. Obsidian renders SVG fine, which is why the heatmap is SVG.
