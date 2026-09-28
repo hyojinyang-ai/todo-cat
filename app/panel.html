@@ -106,15 +106,32 @@ border-radius:7px;background:#fff;padding:2px 4px;color:var(--ink)}
 .mn{font-size:11px}
 #pcount{color:var(--mut);font-size:12.5px}
 #set{position:absolute;inset:0;background:var(--paper);z-index:9;
-padding:34px 20px;display:flex;flex-direction:column;gap:18px}
+padding:30px 14px 16px;display:flex;flex-direction:column;gap:10px;overflow-y:auto}
+.sethead{display:flex;align-items:center;gap:6px;margin-bottom:2px}
 #set h2{font-size:14px;color:var(--ink);margin:0}
-.srow{display:flex;justify-content:space-between;align-items:center;
-font-size:13px}
-.srow select{font:inherit;padding:4px 8px;border:1px solid var(--line);
-border-radius:7px;background:#fff}
-.srow input[type=range]{width:130px;accent-color:var(--acc)}
-#opv{width:38px;text-align:right;color:var(--mut);
-font-variant-numeric:tabular-nums}
+.gh{font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+color:var(--mut);margin:4px 6px 5px}
+.card{background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.srow{display:flex;justify-content:space-between;align-items:center;gap:10px;
+padding:9px 12px;border-top:1px solid var(--line);font-size:13px}
+.card .srow:first-child{border-top:0}
+.rl{display:flex;flex-direction:column;min-width:0;flex:1}
+.rl b{font-size:12.5px;font-weight:600;color:var(--ink)}
+.rl small{font-size:11px;color:var(--mut);line-height:1.35;margin-top:1px}
+.rc{display:flex;align-items:center;gap:6px;flex:none}
+.seg{display:flex;background:var(--soft);border-radius:8px;padding:2px;flex:none}
+.seg span{padding:3px 9px;font-size:11.5px;border-radius:6px;cursor:pointer;color:var(--mut)}
+.seg span.sel{background:#fff;color:var(--ink);font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.tg{appearance:none;-webkit-appearance:none;width:34px;height:20px;border-radius:10px;
+background:#C9CDC4;position:relative;cursor:pointer;flex:none;margin:0;transition:background .15s}
+.tg::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;
+background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.2);transition:left .15s}
+.tg:checked{background:var(--acc)}.tg:checked::after{left:16px}
+#op{width:104px;accent-color:var(--acc)}
+#opv{width:34px;text-align:right;color:var(--mut);font-size:11.5px;font-variant-numeric:tabular-nums}
+#petpick{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:4px 10px;max-width:56%}
+#petpick label{font-size:11.5px;display:flex;align-items:center;gap:4px;white-space:nowrap}
+#petpick input{accent-color:var(--acc);width:14px;height:14px;margin:0}
 .shint{font-size:11px;color:var(--mut)}
 .sw{width:18px;height:18px;border-radius:50%;border:2px solid transparent;cursor:pointer;
 display:inline-block;margin-left:6px;vertical-align:middle;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
@@ -140,22 +157,25 @@ vertical-align:middle;margin-left:8px;cursor:pointer}
 </div>
 <footer><span id="f_dash"></span><span id="f_retro"></span></footer>
 <div id="set" hidden>
-<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
-<button id="back">←</button><h2 id="l_set" style="margin:0"></h2></div>
-<div class="srow"><span id="l_lang"></span>
-<select id="langsel"><option value="ko">한국어</option>
-<option value="en">English</option></select></div>
-<div class="srow"><span id="l_op"></span>
-<span><input type="range" id="op" min="50" max="100" step="5">
-<span id="opv"></span></span></div>
-<div class="srow"><span id="l_imp"></span>
-<input type="checkbox" id="impchk" style="accent-color:var(--acc);width:16px;height:16px"></div>
-<div class="srow"><span id="l_pet"></span>
-<input type="checkbox" id="petchk" style="accent-color:var(--acc);width:16px;height:16px"></div>
-<div class="srow"><span id="l_pets"></span><span id="petpick"></span></div>
-<div class="srow"><span id="l_walk"></span>
-<input type="checkbox" id="walkchk" style="accent-color:var(--acc);width:16px;height:16px"></div>
-<div class="srow"><span id="l_acc"></span><span id="accpick"></span></div>
+<div class="sethead"><button id="back">←</button><h2 id="l_set"></h2></div>
+<div class="grp"><div class="gh" id="h_appear"></div><div class="card">
+<div class="srow"><div class="rl"><b id="l_lang"></b><small id="d_lang"></small></div>
+<div class="seg" id="langseg"><span data-v="ko">한국어</span><span data-v="en">English</span></div></div>
+<div class="srow"><div class="rl"><b id="l_acc"></b><small id="d_acc"></small></div><span id="accpick"></span></div>
+<div class="srow"><div class="rl"><b id="l_op"></b><small id="d_op"></small></div>
+<span class="rc"><input type="range" id="op" min="50" max="100" step="5"><span id="opv"></span></span></div>
+</div></div>
+<div class="grp"><div class="gh" id="h_cal"></div><div class="card">
+<div class="srow"><div class="rl"><b id="l_imp"></b><small id="d_imp"></small></div>
+<input type="checkbox" class="tg" id="impchk"></div>
+</div></div>
+<div class="grp"><div class="gh" id="h_cat"></div><div class="card">
+<div class="srow"><div class="rl"><b id="l_pet"></b><small id="d_pet"></small></div>
+<input type="checkbox" class="tg" id="petchk"></div>
+<div class="srow"><div class="rl"><b id="l_pets"></b><small id="d_pets"></small></div><span id="petpick"></span></div>
+<div class="srow"><div class="rl"><b id="l_walk"></b><small id="d_walk"></small></div>
+<input type="checkbox" class="tg" id="walkchk"></div>
+</div></div>
 <div class="shint" id="l_hint"></div>
 </div>
 <div id="pomo" hidden>
@@ -184,13 +204,13 @@ vertical-align:middle;margin-left:8px;cursor:pointer}
 let S=null,sel="Design";
 const L={ko:{cal:"오늘 일정",todo:"할 일",done:"오늘 완료",inp:"새 항목 입력 후 Enter",
 dash:"대시보드",retro:"Daily 회고",rcal:"일정 새로고침",quit:"종료",set:"설정",
-lang:"언어",op:"투명도",acc:"포인트 색",close:"완료",noopen:"열린 항목 없음 — 가볍게 하나 추가해보세요.",
+lang:"언어",d_lang:"패널·메뉴바·로그 라벨 언어",op:"투명도",d_op:"패널 창의 불투명도",acc:"포인트 색",d_acc:"체크박스·강조·히트맵 색",close:"완료",h_appear:"모양",h_cal:"캘린더",h_cat:"고양이",d_imp:"오늘 일정이 회의 카테고리 할 일로 들어옵니다",d_pet:"패널 위에 고양이를 표시합니다",d_pets:"표시할 고양이 (assets/pets 폴더에서 자동 인식)",d_walk:"패널을 사용한 뒤 60초 동안 걷습니다",noopen:"열린 항목 없음 — 가볍게 하나 추가해보세요.",
 noev:"오늘 남은 일정이 없습니다.",nosrc:"일정 소스 없음 — Exchange 계정 또는 ICS 링크를 등록하세요.",
 recheck:"일정 소스 다시 확인",retry:"다시 연결",checking:"확인 중…",
 hint:"크기 조절: 가장자리 드래그 · 이동: 상단 띠 드래그",imp:"8시에 일정을 할 일로 가져오기",pet:"데스크톱 고양이 펫",walk:"사용 중일 때 패널 위 산책",pets:"고양이",edit:"수정",del:"삭제",catchg:"카테고리 변경",hide:"목록에서 지우기",pomo:"포모도로",focus:"집중",brk:"휴식",start:"시작",pause:"일시정지",resume:"계속",reset:"종료(리셋)",pw:"집중",pb:"휴식",ptoday:"오늘 완료한 포모도로",min:"분"},
 en:{cal:"Today's schedule",todo:"To do",done:"Done today",inp:"Type and press Enter",
 dash:"Dashboard",retro:"Daily retro",rcal:"Refresh calendar",quit:"Quit",set:"Settings",
-lang:"Language",op:"Opacity",acc:"Accent color",close:"Done",noopen:"Nothing open — add something light.",
+lang:"Language",d_lang:"Panel, menu bar and log labels",op:"Opacity",d_op:"Transparency of the panel window",acc:"Accent color",d_acc:"Checkboxes, highlights and the heatmap",close:"Done",h_appear:"Appearance",h_cal:"Calendar",h_cat:"Cat",d_imp:"Today's events become Meeting to-dos",d_pet:"Show the cat on top of the panel",d_pets:"Which cats to show (found in assets/pets)",d_walk:"Walks for 60 s after you use the panel",noopen:"Nothing open — add something light.",
 noev:"No more events today.",nosrc:"No calendar source — add an Exchange account or ICS link.",
 recheck:"Re-check calendar source",retry:"Reconnect",checking:"Checking…",
 hint:"Resize: drag edges · Move: drag the top strip",imp:"Import events as todos at 8 AM",pet:"Desktop cat pet",walk:"Walk on the panel while active",pets:"Cats",edit:"Edit",del:"Delete",catchg:"Change category",hide:"Remove from list",pomo:"Pomodoro",focus:"Focus",brk:"Break",start:"Start",pause:"Pause",resume:"Resume",reset:"Stop (reset)",pw:"Focus",pb:"Break",ptoday:"Pomodoros today",min:"min"}};
@@ -260,6 +280,8 @@ document.getElementById("l_lang").textContent=t.lang;
 document.getElementById("l_op").textContent=t.op;
 document.getElementById("l_acc").textContent=t.acc;
 document.getElementById("l_hint").textContent=t.hint;
+["h_appear","h_cal","h_cat","d_lang","d_op","d_acc","d_imp","d_pet","d_pets","d_walk"]
+.forEach(k=>{const e=document.getElementById(k);if(e)e.textContent=t[k]||""});
 document.getElementById("l_imp").textContent=t.imp;
 document.getElementById("l_pet").textContent=t.pet;
 document.getElementById("l_walk").textContent=t.walk;
@@ -281,7 +303,7 @@ ci.onchange=e=>post({action:"setting",key:"accent",value:e.target.value});ap.app
 ap.querySelectorAll(".sw").forEach(b=>b.classList.toggle("sel",b.dataset.c===(s.settings.accent||"#2E6E5E")));
 document.getElementById("acccustom").value=s.settings.accent||"#2E6E5E";
 document.getElementById("date").textContent=s.date_label;
-document.getElementById("langsel").value=s.settings.lang;
+document.querySelectorAll("#langseg span").forEach(x=>x.classList.toggle("sel",x.dataset.v===s.settings.lang));
 const op=document.getElementById("op");
 if(document.activeElement!==op)op.value=Math.round(s.settings.opacity*100);
 document.getElementById("opv").textContent=op.value+"%";
@@ -291,7 +313,6 @@ document.getElementById("walkchk").checked=!!s.settings.pet_walk;
 const pp=document.getElementById("petpick");
 if(!pp.childElementCount)(s.pet_list||[]).forEach(([k,n])=>{const lb=el("label");
 const cb=document.createElement("input");cb.type="checkbox";cb.dataset.k=k;
-cb.style.cssText="accent-color:var(--acc);width:16px;height:16px;vertical-align:middle;margin-left:10px";
 cb.onchange=()=>{const on=[...pp.querySelectorAll("input")].filter(c=>c.checked).map(c=>c.dataset.k);
 if(!on.length){cb.checked=true;return}post({action:"setting",key:"pets",value:on})};
 lb.appendChild(cb);lb.appendChild(document.createTextNode(" "+n));pp.appendChild(lb)});
@@ -335,8 +356,8 @@ document.getElementById("set").hidden=true};
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){
 document.getElementById("set").hidden=true;
 document.getElementById("pomo").hidden=true}});
-document.getElementById("langsel").onchange=e=>{
-post({action:"setting",key:"lang",value:e.target.value})};
+document.querySelectorAll("#langseg span").forEach(x=>{x.onclick=()=>{
+post({action:"setting",key:"lang",value:x.dataset.v})}});
 document.getElementById("walkchk").onchange=e=>{
 post({action:"setting",key:"pet_walk",value:e.target.checked})};
 document.getElementById("petchk").onchange=e=>{
