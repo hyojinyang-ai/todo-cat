@@ -13,13 +13,14 @@ header h1{font-size:18px;font-weight:700;letter-spacing:-.01em;margin:0}
 .scoretag{color:var(--acc);font-weight:600;
 font-variant-numeric:tabular-nums;margin-left:5px}
 #gear:hover{color:var(--ink);background:var(--soft)}
-#back{border:0;background:none;cursor:pointer;font-size:16px;
+#back,#pback{border:0;background:none;cursor:pointer;font-size:16px;
 padding:2px 6px;color:var(--mut);border-radius:6px}
-#back:hover{color:var(--ink);background:var(--soft)}
-main{flex:1;overflow-y:auto;padding:0 2px}
-h2{font-size:11px;font-weight:600;color:var(--mut);margin:14px 4px 6px}
-.row{display:flex;align-items:center;gap:8px;padding:6px 6px;border-radius:7px}
+#back:hover,#pback:hover{color:var(--ink);background:var(--soft)}
+main{flex:1;overflow-y:auto;padding:0 2px;display:flex;flex-direction:column;gap:2px}
+.row{display:flex;align-items:center;gap:8px;padding:7px 10px;border-top:1px solid var(--line)}
+.card .row:first-child,.card .empty:first-child,.card .zerostate:first-child{border-top:0}
 .row:hover{background:var(--soft)}
+#calref{cursor:pointer;margin-left:2px}#calref:hover{color:var(--ink)}
 .row .t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;
 white-space:nowrap}
 .row .t[contenteditable="true"]{white-space:normal;outline:none;
@@ -41,34 +42,34 @@ padding:2px 3px;color:var(--mut);border-radius:5px}
 .act button:hover{background:#fff;color:var(--ink)}
 .time{font-size:11.5px;color:var(--mut);width:38px;flex:none;
 font-variant-numeric:tabular-nums}
-.empty{color:var(--mut);font-size:12.5px;padding:4px 6px}
-.zerostate{display:flex;flex-direction:column;align-items:center;
+.empty{color:var(--mut);font-size:12.5px;padding:9px 12px}
+.zerostate{display:flex;flex-direction:column;align-items:center;padding:12px 0 6px;
 gap:2px;padding:10px 0 4px}
 .zerostate img{height:88px;opacity:.92}
-#connect{border:1px solid var(--line);background:#fff;border-radius:8px;
+#connect{margin:0 12px 10px;border:1px solid var(--line);background:var(--soft);border-radius:8px;
 padding:7px 10px;font:inherit;font-size:12.5px;cursor:pointer;width:100%}
 #connect:hover{border-color:var(--acc);color:var(--acc)}
-.err{color:#A34040;font-size:11.5px;padding:4px 6px;word-break:break-all}
-#addbox{border-top:1px solid var(--line);padding:9px 2px 4px;margin-top:6px}
+.err{color:#A34040;font-size:11.5px;padding:9px 12px 4px;word-break:break-all}
+#addbox{padding:8px 2px 2px}
 #chips{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:7px}
 .chip{display:flex;align-items:center;gap:4px;border:1px solid var(--line);
 background:#fff;border-radius:20px;padding:2.5px 9px;font-size:11px;
 cursor:pointer;color:var(--mut)}
 .chip.sel{border-color:var(--ink);color:var(--ink);font-weight:600}
-#addrow{display:flex;gap:6px;align-items:stretch}
-#catsel{font:inherit;font-size:12px;border:1px solid var(--line);
-border-radius:8px;background:#fff;padding:0 4px;max-width:92px;color:var(--ink)}
+#addrow{display:flex;gap:0;align-items:stretch;overflow:visible}
+#catsel{font:inherit;font-size:12px;border:0;border-right:1px solid var(--line);
+border-radius:0;background:transparent;padding:0 6px;max-width:96px;color:var(--ink)}
 .catmenu{position:fixed;z-index:99;background:#fff;border:1px solid var(--line);
 border-radius:9px;box-shadow:0 6px 20px rgba(0,0,0,.14);padding:4px;
 min-width:118px}
 .citem{display:flex;align-items:center;gap:7px;padding:5px 9px;
 border-radius:6px;font-size:12px;cursor:pointer}
 .citem:hover{background:var(--soft)}.citem.cur{font-weight:600}
-#inp{flex:1;border:1px solid var(--line);border-radius:8px;
-padding:8px 10px;font:inherit;background:#fff;outline:none;
+#inp{flex:1;border:0;border-radius:0;
+padding:9px 10px;font:inherit;background:transparent;outline:none;
 -webkit-user-select:text;user-select:text}
-#inp:focus{border-color:var(--acc)}
-footer{display:flex;justify-content:space-between;padding:8px 6px 2px;
+#addrow:focus-within{border-color:var(--acc)}
+footer{display:flex;justify-content:center;gap:16px;padding:8px 6px 2px;
 font-size:11px;color:var(--mut)}
 footer span{cursor:pointer}footer span:hover{color:var(--ink)}
 #set[hidden],#pomo[hidden]{display:none!important}
@@ -77,8 +78,8 @@ line-height:1;width:24px;height:24px;display:grid;place-items:center;
 padding:0;color:var(--mut);border-radius:6px}
 #pomob:hover{color:var(--ink);background:var(--soft)}
 #pomo{position:absolute;inset:0;background:var(--paper);z-index:9;
-padding:34px 20px;display:flex;flex-direction:column;gap:14px;
-align-items:center}
+padding:30px 14px 16px;display:flex;flex-direction:column;gap:10px;overflow-y:auto}
+.pcard{display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 12px 16px}
 #pcatwrap{position:relative;display:inline-block;margin:0 0 -4px}
 #pcat{height:118px;display:block;transform-origin:50% 90%}
 #pcat.zen{animation:zensway 3.2s ease-in-out infinite}
@@ -99,12 +100,9 @@ background:#fff;border-radius:22px;padding:10px 22px;cursor:pointer}
 .pbtns button:hover{border-color:var(--acc);color:var(--acc)}
 #pstart{background:var(--acc);color:#fff;border-color:var(--acc)}
 #pstart:hover{color:#fff;opacity:.9}
-.pdur{display:flex;gap:6px;align-items:center;font-size:12px;
-color:var(--mut);margin-top:2px}
-.pdur select{font:inherit;font-size:12px;border:1px solid var(--line);
-border-radius:7px;background:#fff;padding:2px 4px;color:var(--ink)}
-.mn{font-size:11px}
-#pcount{color:var(--mut);font-size:12.5px}
+#pwsel,#pbsel{font:inherit;font-size:12px;border:1px solid var(--line);border-radius:7px;background:#fff;padding:2px 4px;color:var(--ink)}
+.mn{font-size:11px;color:var(--mut)}
+#pcount{color:var(--ink);font-size:12.5px;font-weight:600;font-variant-numeric:tabular-nums}
 #set{position:absolute;inset:0;background:var(--paper);z-index:9;
 padding:30px 14px 16px;display:flex;flex-direction:column;gap:10px;overflow-y:auto}
 .sethead{display:flex;align-items:center;gap:6px;margin-bottom:2px}
@@ -144,17 +142,13 @@ vertical-align:middle;margin-left:8px;cursor:pointer}
 <button id="pomob" title="Pomodoro">🍅</button>
 <button id="gear" title="Settings">⚙️</button></div></header>
 <main>
-<h2><span id="l_cal"></span> <span id="calref" style="cursor:pointer">↻</span></h2>
-<div id="cal"></div>
-<h2 id="l_todo"></h2>
-<div id="open"></div>
-<h2 id="doneh" style="display:none"></h2>
-<div id="closed"></div>
+<div class="grp"><div class="gh"><span id="l_cal"></span> <span id="calref" title="↻">↻</span></div>
+<div class="card" id="cal"></div></div>
+<div class="grp"><div class="gh" id="l_todo"></div><div class="card" id="open"></div></div>
+<div class="grp" id="donegrp"><div class="gh" id="doneh"></div><div class="card" id="closed"></div></div>
 </main>
-<div id="addbox">
-<div id="addrow"><select id="catsel"></select>
-<input id="inp" autocomplete="off"></div>
-</div>
+<div id="addbox"><div class="card" id="addrow"><select id="catsel"></select>
+<input id="inp" autocomplete="off"></div></div>
 <footer><span id="f_dash"></span><span id="f_retro"></span></footer>
 <div id="set" hidden>
 <div class="sethead"><button id="back">←</button><h2 id="l_set"></h2></div>
@@ -179,38 +173,35 @@ vertical-align:middle;margin-left:8px;cursor:pointer}
 <div class="shint" id="l_hint"></div>
 </div>
 <div id="pomo" hidden>
-<div style="display:flex;align-items:center;gap:6px;width:100%">
-<button id="pback" style="border:0;background:none;cursor:pointer;font-size:16px;padding:2px 6px;color:var(--mut);border-radius:6px">←</button>
-<h2 id="l_pomo" style="margin:0;font-size:14px;color:var(--ink)"></h2></div>
-<div class="pdur">
-<span id="l_pw"></span><select id="pwsel"><option>15</option>
-<option>20</option><option>25</option><option>30</option>
-<option>45</option><option>50</option></select><span class="mn" id="l_m1"></span>
-<span style="color:var(--line)">·</span>
-<span id="l_pb"></span><select id="pbsel"><option>5</option>
-<option>10</option><option>15</option></select><span class="mn" id="l_m2"></span>
-</div>
+<div class="sethead"><button id="pback">←</button><h2 id="l_pomo"></h2></div>
+<div class="card pcard">
 <div id="pcatwrap"><span class="note n1">♪</span><span class="note n2">♫</span><span class="note n3">♪</span>
 <img id="pcat" src="../assets/pomo_zen.png" alt=""></div>
 <div id="pmode"></div>
 <div id="ptime">25:00</div>
-<div class="pbtns">
-<button id="pstart">▶</button>
-<button id="preset">■</button></div>
-<div id="pcount"></div>
+<div class="pbtns"><button id="pstart">▶</button><button id="preset">■</button></div>
+</div>
+<div class="grp"><div class="gh" id="h_sess"></div><div class="card">
+<div class="srow"><div class="rl"><b id="l_pw"></b><small id="d_pw"></small></div>
+<span class="rc"><select id="pwsel"><option>15</option><option>20</option><option>25</option>
+<option>30</option><option>45</option><option>50</option></select><span class="mn" id="l_m1"></span></span></div>
+<div class="srow"><div class="rl"><b id="l_pb"></b><small id="d_pb"></small></div>
+<span class="rc"><select id="pbsel"><option>5</option><option>10</option><option>15</option></select><span class="mn" id="l_m2"></span></span></div>
+<div class="srow"><div class="rl"><b id="l_ptoday"></b><small id="d_ptoday"></small></div><span class="rc" id="pcount"></span></div>
+</div></div>
 </div>
 </div>
 <script>
 let S=null,sel="Design";
 const L={ko:{cal:"오늘 일정",todo:"할 일",done:"오늘 완료",inp:"새 항목 입력 후 Enter",
 dash:"대시보드",retro:"Daily 회고",rcal:"일정 새로고침",quit:"종료",set:"설정",
-lang:"언어",d_lang:"패널·메뉴바·로그 라벨 언어",op:"투명도",d_op:"패널 창의 불투명도",acc:"포인트 색",d_acc:"체크박스·강조·히트맵 색",close:"완료",h_appear:"모양",h_cal:"캘린더",h_cat:"고양이",d_imp:"오늘 일정이 회의 카테고리 할 일로 들어옵니다",d_pet:"패널 위에 고양이를 표시합니다",d_pets:"표시할 고양이 (assets/pets 폴더에서 자동 인식)",d_walk:"패널을 사용한 뒤 60초 동안 걷습니다",noopen:"열린 항목 없음 — 가볍게 하나 추가해보세요.",
+lang:"언어",d_lang:"패널·메뉴바·로그 라벨 언어",op:"투명도",d_op:"패널 창의 불투명도",acc:"포인트 색",d_acc:"체크박스·강조·히트맵 색",close:"완료",h_appear:"모양",h_sess:"세션",d_pw:"집중 세션 길이",d_pb:"세션 사이 휴식 길이",d_ptoday:"횟수 · 집중한 시간",h_cal:"캘린더",h_cat:"고양이",d_imp:"오늘 일정이 회의 카테고리 할 일로 들어옵니다",d_pet:"패널 위에 고양이를 표시합니다",d_pets:"표시할 고양이 (assets/pets 폴더에서 자동 인식)",d_walk:"패널을 사용한 뒤 60초 동안 걷습니다",noopen:"열린 항목 없음 — 가볍게 하나 추가해보세요.",
 noev:"오늘 남은 일정이 없습니다.",nosrc:"일정 소스 없음 — Exchange 계정 또는 ICS 링크를 등록하세요.",
 recheck:"일정 소스 다시 확인",retry:"다시 연결",checking:"확인 중…",
 hint:"크기 조절: 가장자리 드래그 · 이동: 상단 띠 드래그",imp:"8시에 일정을 할 일로 가져오기",pet:"데스크톱 고양이 펫",walk:"사용 중일 때 패널 위 산책",pets:"고양이",edit:"수정",del:"삭제",catchg:"카테고리 변경",hide:"목록에서 지우기",pomo:"포모도로",focus:"집중",brk:"휴식",start:"시작",pause:"일시정지",resume:"계속",reset:"종료(리셋)",pw:"집중",pb:"휴식",ptoday:"오늘 완료한 포모도로",min:"분"},
 en:{cal:"Today's schedule",todo:"To do",done:"Done today",inp:"Type and press Enter",
 dash:"Dashboard",retro:"Daily retro",rcal:"Refresh calendar",quit:"Quit",set:"Settings",
-lang:"Language",d_lang:"Panel, menu bar and log labels",op:"Opacity",d_op:"Transparency of the panel window",acc:"Accent color",d_acc:"Checkboxes, highlights and the heatmap",close:"Done",h_appear:"Appearance",h_cal:"Calendar",h_cat:"Cat",d_imp:"Today's events become Meeting to-dos",d_pet:"Show the cat on top of the panel",d_pets:"Which cats to show (found in assets/pets)",d_walk:"Walks for 60 s after you use the panel",noopen:"Nothing open — add something light.",
+lang:"Language",d_lang:"Panel, menu bar and log labels",op:"Opacity",d_op:"Transparency of the panel window",acc:"Accent color",d_acc:"Checkboxes, highlights and the heatmap",close:"Done",h_appear:"Appearance",h_sess:"Session",d_pw:"Length of a focus session",d_pb:"Break between sessions",d_ptoday:"Sessions · minutes focused",h_cal:"Calendar",h_cat:"Cat",d_imp:"Today's events become Meeting to-dos",d_pet:"Show the cat on top of the panel",d_pets:"Which cats to show (found in assets/pets)",d_walk:"Walks for 60 s after you use the panel",noopen:"Nothing open — add something light.",
 noev:"No more events today.",nosrc:"No calendar source — add an Exchange account or ICS link.",
 recheck:"Re-check calendar source",retry:"Reconnect",checking:"Checking…",
 hint:"Resize: drag edges · Move: drag the top strip",imp:"Import events as todos at 8 AM",pet:"Desktop cat pet",walk:"Walk on the panel while active",pets:"Cats",edit:"Edit",del:"Delete",catchg:"Change category",hide:"Remove from list",pomo:"Pomodoro",focus:"Focus",brk:"Break",start:"Start",pause:"Pause",resume:"Resume",reset:"Stop (reset)",pw:"Focus",pb:"Break",ptoday:"Pomodoros today",min:"min"}};
@@ -280,13 +271,14 @@ document.getElementById("l_lang").textContent=t.lang;
 document.getElementById("l_op").textContent=t.op;
 document.getElementById("l_acc").textContent=t.acc;
 document.getElementById("l_hint").textContent=t.hint;
-["h_appear","h_cal","h_cat","d_lang","d_op","d_acc","d_imp","d_pet","d_pets","d_walk"]
+["h_appear","h_cal","h_cat","h_sess","d_lang","d_op","d_acc","d_imp","d_pet","d_pets","d_walk","d_pw","d_pb","d_ptoday"]
 .forEach(k=>{const e=document.getElementById(k);if(e)e.textContent=t[k]||""});
 document.getElementById("l_imp").textContent=t.imp;
 document.getElementById("l_pet").textContent=t.pet;
 document.getElementById("l_walk").textContent=t.walk;
 document.getElementById("l_pets").textContent=t.pets;
 document.getElementById("l_pomo").textContent=t.pomo;
+document.getElementById("l_ptoday").textContent=t.ptoday;
 document.getElementById("l_pw").textContent=t.pw;
 document.getElementById("l_pb").textContent=t.pb;
 document.getElementById("l_m1").textContent=t.min;
@@ -340,7 +332,7 @@ opn.appendChild(z)}
 s.open.forEach(x=>opn.appendChild(todoRow(x,false)));
 const cl=document.getElementById("closed");cl.innerHTML="";
 const dh=document.getElementById("doneh");
-dh.style.display=s.total?"":"none";
+document.getElementById("donegrp").style.display=s.total?"":"none";
 dh.textContent=t.done;
 dh.appendChild(el("span","scoretag","☑ "+s.done+"/"+s.total));
 s.closed.forEach(x=>cl.appendChild(todoRow(x,true)));
@@ -393,7 +385,7 @@ pr.textContent="■";pr.title=t.reset;
 document.getElementById("pwsel").value=S.settings.pomo_work;
 document.getElementById("pbsel").value=S.settings.pomo_break;
 document.getElementById("pcount").textContent=
-t.ptoday+": 🍅 "+S.pomo_today.count+" · "+S.pomo_today.min+t.min}
+"🍅 "+S.pomo_today.count+" · "+S.pomo_today.min+" "+t.min}
 function ptick(){P.rem--;
 if(P.rem<=0){clearInterval(P.iv);P.run=false;
 post({action:"pomo_done",mode:P.mode,mins:S.settings.pomo_work});

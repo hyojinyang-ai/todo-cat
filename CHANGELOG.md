@@ -4,6 +4,7 @@ Everything here was built pair-programming with Claude. Dates are actual working
 
 ## 2026-09-28
 ### Added
+- **Todo and Pomodoro pages restyled to match Settings**: schedule / to-do / done lists as cards under small group headers, add-item box as a card, centered footer; Pomodoro page gets the same header, a timer card and a *Session* group with title/description rows (focus, break, today's count).
 - **Settings page redesigned** with hierarchy: three groups (Appearance · Calendar · Cat) as cards, each row with a title and a one-line description, controls aligned right; segmented control for language, switch-style toggles, swatch row for accent, slider with value for opacity.
 - **Accent colour** in Settings: six swatches plus a custom colour picker; recolours the UI live and the Obsidian heatmap uses the same colour on its next refresh.
 ### Changed
