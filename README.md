@@ -42,7 +42,7 @@ Paths inside the app are resolved from the file location (`ROOT = parents[1]`), 
 - `import_hour` / `eod_hour` — when events become tasks and when the day auto-closes.
 - `loaf_after` — seconds without panel use before cats with loaf frames settle into a loaf (default 300).
 - `claude_bin` — path to the Claude Code CLI if it is not on `PATH` (AI retro only).
-- `sound` — name of a macOS system sound (`Purr`, `Glass`, `Ping`, … see `/System/Library/Sounds`) or a path to your own audio file; played at half volume when a session ends.
+- `sound` — default end-of-session sound for new installs (a macOS system sound name or a file path). Users change it in Settings → Pomodoro, which lists all system sounds with a preview.
 
 ## Data (not in the repo)
 - `<vault>/Tracker/tasks.json`, `Tracker/{Log,Monthly,Retros}/`, `Dashboard.md`, `assets/heatmap.svg`

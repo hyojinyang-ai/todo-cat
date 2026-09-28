@@ -94,6 +94,26 @@ def discover_pets():
     return found
 
 
+SOUND_DIR = Path("/System/Library/Sounds")
+SOUNDS = sorted(p.stem for p in SOUND_DIR.glob("*.aiff"))   # Basso … Tink
+
+
+def sound_path(name):
+    name = str(name or "")
+    if name in ("", "None"):
+        return None
+    if "/" in name:
+        return name if Path(name).exists() else None
+    p = SOUND_DIR / f"{name}.aiff"
+    return str(p) if p.exists() else str(SOUND_DIR / "Purr.aiff")
+
+
+def play_sound(name):
+    p = sound_path(name)
+    if p:
+        subprocess.Popen(["afplay", "-v", "0.5", p])
+
+
 PETS = discover_pets()
 DEFAULT_PETS = list(PETS)[:1]
 
@@ -108,7 +128,8 @@ def get_settings():
             "pet_enabled": bool(c.get("pet_enabled", True)),
             "pet_walk": bool(c.get("pet_walk", True)),
             "pets": [k for k in c.get("pets", DEFAULT_PETS) if k in PETS] or DEFAULT_PETS,
-            "accent": _hex(c.get("accent"), "#2E6E5E")}
+            "accent": _hex(c.get("accent"), "#2E6E5E"),
+            "sound": str(c.get("sound", todo.CFG.get("sound", "Purr")))}
 
 
 def _hex(v, default):
@@ -323,6 +344,7 @@ def build_state(cal_status):
         "cats": {k: v[0] for k, v in todo.CATS.items()},
         "cat_labels": labels,
         "pet_list": [[k, v[0]] for k, v in PETS.items()],
+        "sounds": SOUNDS,
         "open": [{"id": x["id"], "title": x["title"], "cat": x["category"]}
                  for x in sorted(open_t, key=lambda x: x["id"], reverse=True)],
         "closed": [{"id": x["id"], "title": x["title"], "cat": x["category"]}
@@ -649,12 +671,10 @@ class Bridge(NSObject):
             else:
                 todo.notify("휴식 끝 — 다시 집중할 시간이에요 🍅" if ko
                        else "Break over — time to focus 🍅", "Pomodoro")
-            snd = str(todo.CFG.get("sound") or "Purr")
-            path = snd if "/" in snd else f"/System/Library/Sounds/{snd}.aiff"
-            if not Path(path).exists():
-                path = "/System/Library/Sounds/Purr.aiff"
-            subprocess.Popen(["afplay", "-v", "0.5", path])   # short, system-level, half volume
+            play_sound(get_settings()["sound"])   # short system sound, half volume ("None" = silent)
             self.push()
+        elif a == "preview_sound":
+            play_sound(b.get("name", ""))
         elif a == "quit":
             NSApplication.sharedApplication().terminate_(None)
 
