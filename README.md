@@ -11,7 +11,7 @@ Built with Python (pyobjc) + WKWebView. No server, no account; everything lives 
 - **Calendar import** — at 08:00 today's events become *Meeting* tasks with their duration (via macOS Calendar/EventKit, or an ICS link)
 - **Pomodoro** — focus/break timer with the cat pacing beside you, singing-bowl sound at the end, remaining time in the menu bar
 - **Obsidian automation** — Daily Log (WORK SESSIONS / FOCUS / UNFINISHED / NEXT STEPS), a living Dashboard with a 16-week heatmap, monthly review page, and an 18:00 bilingual (ko/en) AI retro via Claude Code CLI
-- **Cat pet** — sits on the panel when idle, walks for 60 s after you interact, opens its eyes when you add a task and blushes when you complete one
+- **Cat pet** — sits on the panel when idle, walks for 60 s after you interact, opens its eyes when you add a task and blushes when you complete one, settles into a loaf after 5 min without panel use (cats with loaf frames). Pick one or more cats in Settings → Cats
 - **Native citizen** — Dock icon, menu bar item, standard app menu (⌘C/⌘V work), close/minimize traffic lights, launches at login
 
 ## Layout
@@ -20,9 +20,9 @@ todo-cat/
 ├── app/          panel.py (app: windows, menu bar, pet, calendar, scheduler)
 │                 panel.html (single-file UI: Todo / Pomodoro / Settings, ko·en)
 │                 todo.py (data core, Obsidian writers, AI retro, CLI)
-├── assets/       cat/ sitting cat + expressions · walk/ 16 walk frames
+├── assets/       pets/<cat>/ per cat: sitting + expressions, 8 walk frames, 8 loaf frames (+ mirrored)
 │                 pomo_zen.png · singing-bowl.mp3
-├── tools/        mkframes.py, mksit.py — regenerate cat frames from source artwork
+├── tools/        mkframes.py, mksit.py — regenerate cat frames from source artwork (per cat folder)
 ├── install/      setup.sh · Info.plist · AppIcon.icns · LaunchAgent template
 ├── skill/        todo-cat/ — Claude skill: deploy, maintain, extend
 ├── state/        runtime state (settings, caches, pid) — git-ignored
@@ -34,12 +34,13 @@ Paths inside the app are resolved from the file location (`ROOT = parents[1]`), 
 `install/setup.sh` writes `config.json` (git-ignored) at the repo root:
 ```json
 { "vault_path": "~/Documents/MyVault", "vault_name": "MyVault",
-  "lang": "en", "import_hour": 8, "eod_hour": 18, "claude_bin": "" }
+  "lang": "en", "import_hour": 8, "eod_hour": 18, "loaf_after": 300, "claude_bin": "" }
 ```
 - `vault_path` — where `Tracker/` (tasks, logs, retros, dashboard) is written. Any folder works; with an Obsidian vault the links and embeds come alive.
 - `vault_name` — Obsidian vault name for `obsidian://` deep links; leave empty to open files with the default Markdown app.
 - `lang` — default UI language (`en` / `ko`), changeable in Settings.
 - `import_hour` / `eod_hour` — when events become tasks and when the day auto-closes.
+- `loaf_after` — seconds without panel use before cats with loaf frames settle into a loaf (default 300).
 - `claude_bin` — path to the Claude Code CLI if it is not on `PATH` (AI retro only).
 
 ## Data (not in the repo)
@@ -47,14 +48,18 @@ Paths inside the app are resolved from the file location (`ROOT = parents[1]`), 
 - Settings, tokens and caches: `state/` (git-ignored)
 
 ## Install
-Requirements: macOS 14+ and [python.org Python 3.13](https://www.python.org/downloads/macos/) (Homebrew Python lacks the GUI binary). Optional: Obsidian, a calendar account in macOS Calendar, [Claude Code](https://docs.claude.com/en/docs/claude-code) CLI for the AI retro.
+Requirements: macOS 14+ and [python.org Python 3.13](https://www.python.org/downloads/macos/) (Homebrew Python lacks the GUI binary). After installing it, run `/Applications/Python 3.13/Install Certificates.command` once — otherwise HTTPS calendar (ICS) links fail with `CERTIFICATE_VERIFY_FAILED`. Optional: Obsidian, a calendar account in macOS Calendar, [Claude Code](https://docs.claude.com/en/docs/claude-code) CLI for the AI retro.
 ```bash
 git clone https://github.com/hyojinyang-ai/todo-cat ~/.claude-todo && ~/.claude-todo/install/setup.sh
 ```
 The installer detects your Obsidian vaults, writes `config.json`, builds `~/Applications/To-Do.app`, and registers it to launch at login. Then add your calendar account in System Settings → Internet Accounts (calendar on), click **Re-check calendar source** in the panel and allow calendar access.
 
-### Regenerating the cat
-The artwork is in `assets/`. To swap in your own cat: `python3 tools/mksit.py <sitting-cat.png>` and `python3 tools/mkframes.py <walk-sprite-sheet.png>` (8 frames in a row, walking right). White backgrounds become transparent automatically.
+### Adding your own cat
+Every folder in `assets/pets/` that contains a `cat.png` shows up in Settings → Cats — no code change. Only `sprout/` ships with the repo; other folders are git-ignored, so cat packs can live in their own repos and be dropped in.
+
+A cat folder holds (all RGBA PNG, each with a mirrored `_flip` copy): `cat`, `pet_alert`, `pet_happy` (sitting + expressions) and `walk1..8` (walking right). Optional: `loaf1..8` (sitting → loaf; without them the cat just keeps sitting) and `pomo.png` (shown during a Pomodoro; without it the cat just sits). The pet window is 108 pt tall and as wide as the widest frame.
+
+To build Sprout-style frames from artwork: `python3 tools/mksit.py <sitting-cat.png> <cat>` and `python3 tools/mkframes.py <walk-sprite-sheet.png> <cat>` (8 frames in a row, walking right). White backgrounds become transparent automatically. Both tools have the frame/eye positions of Sprout's source artwork hard-coded — measure yours and adjust them.
 
 ## Maintaining with Claude
 `skill/todo-cat/` is a Claude skill (Claude.ai Projects / Claude Code). Loaded in a fresh conversation, Claude already knows the install and deploy procedure, the architecture and the list of pitfalls.
