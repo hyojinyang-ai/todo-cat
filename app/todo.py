@@ -255,7 +255,18 @@ def write_heatmap_svg(weeks=16):
     cell, gap, left, top = 13, 3, 30, 22
     W = left + weeks * (cell + gap) + 6
     H = top + 7 * (cell + gap) + 6
-    cols = ["#ECEEE7", "#BFD9CF", "#84B5A4", "#4F907B", "#2E6E5E"]
+    acc = "#2E6E5E"
+    try:
+        a = json.loads((STATE / "settings.json").read_text()).get("accent", "")
+        if len(a) == 7 and a[0] == "#":
+            int(a[1:], 16); acc = a
+    except Exception:
+        pass
+
+    def blend(t):   # paper → accent
+        p, q = (0xEC, 0xEE, 0xE7), tuple(int(acc[i:i+2], 16) for i in (1, 3, 5))
+        return "#%02X%02X%02X" % tuple(round(p[i] + (q[i] - p[i]) * t) for i in range(3))
+    cols = [blend(t) for t in (0, 0.3, 0.55, 0.8, 1.0)]
     out = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" '
            f'viewBox="0 0 {W} {H}" font-family="Inter,Pretendard,-apple-system,sans-serif" '
            f'font-size="10" fill="#767C70">']
@@ -274,7 +285,7 @@ def write_heatmap_svg(weeks=16):
             n = counts.get(d.isoformat(), 0)
             c = cols[min(n, 4)]
             x, y = left + w * (cell + gap), top + r * (cell + gap)
-            stroke = ' stroke="#2E6E5E" stroke-width="1.5"' if d == today else ""
+            stroke = f' stroke="{acc}" stroke-width="1.5"' if d == today else ""
             out.append(f'<rect x="{x}" y="{y}" width="{cell}" height="{cell}" rx="2.5" '
                        f'fill="{c}"{stroke}><title>{d.isoformat()} · {n} done</title></rect>')
     out.append("</svg>")

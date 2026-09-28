@@ -3,7 +3,10 @@
 Everything here was built pair-programming with Claude. Dates are actual working days.
 
 ## 2026-09-28
+### Added
+- **Accent colour** in Settings: six swatches plus a custom colour picker; recolours the UI live and the Obsidian heatmap uses the same colour on its next refresh.
 ### Changed
+- Removed the "Done" button from Settings — every setting applies on change; use ← or Esc to go back.
 - **No duplicate schedule entries.** A calendar event that was already imported as a to-do no longer reappears in "Today's schedule" when its calendar ID changes on re-sync: events are matched by title (and time) against today's to-dos and against the titles imported at 08:00, not only by ID. The import itself also skips same-title events.
 - **Rule 1 narrowed to the Pomodoro page.** Desktop cats no longer sit down when a Pomodoro starts; they keep sitting/walking/loafing independently of the timer. The singing-bowl cat remains the Pomodoro-page visual.
 ### Added

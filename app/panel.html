@@ -115,10 +115,12 @@ border-radius:7px;background:#fff}
 .srow input[type=range]{width:130px;accent-color:var(--acc)}
 #opv{width:38px;text-align:right;color:var(--mut);
 font-variant-numeric:tabular-nums}
-#setclose{margin-top:auto;border:1px solid var(--line);background:#fff;
-border-radius:8px;padding:8px;font:inherit;cursor:pointer}
-#setclose:hover{border-color:var(--acc);color:var(--acc)}
 .shint{font-size:11px;color:var(--mut)}
+.sw{width:18px;height:18px;border-radius:50%;border:2px solid transparent;cursor:pointer;
+display:inline-block;margin-left:6px;vertical-align:middle;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
+.sw.sel{border-color:var(--ink)}
+#acccustom{width:22px;height:22px;border:0;padding:0;background:none;
+vertical-align:middle;margin-left:8px;cursor:pointer}
 ::-webkit-scrollbar{width:0}
 </style></head><body><div id="app">
 <header><h1 id="date"></h1><div id="hr">
@@ -153,8 +155,8 @@ border-radius:8px;padding:8px;font:inherit;cursor:pointer}
 <div class="srow"><span id="l_pets"></span><span id="petpick"></span></div>
 <div class="srow"><span id="l_walk"></span>
 <input type="checkbox" id="walkchk" style="accent-color:var(--acc);width:16px;height:16px"></div>
+<div class="srow"><span id="l_acc"></span><span id="accpick"></span></div>
 <div class="shint" id="l_hint"></div>
-<button id="setclose"></button>
 </div>
 <div id="pomo" hidden>
 <div style="display:flex;align-items:center;gap:6px;width:100%">
@@ -182,13 +184,13 @@ border-radius:8px;padding:8px;font:inherit;cursor:pointer}
 let S=null,sel="Design";
 const L={ko:{cal:"오늘 일정",todo:"할 일",done:"오늘 완료",inp:"새 항목 입력 후 Enter",
 dash:"대시보드",retro:"Daily 회고",rcal:"일정 새로고침",quit:"종료",set:"설정",
-lang:"언어",op:"투명도",close:"완료",noopen:"열린 항목 없음 — 가볍게 하나 추가해보세요.",
+lang:"언어",op:"투명도",acc:"포인트 색",close:"완료",noopen:"열린 항목 없음 — 가볍게 하나 추가해보세요.",
 noev:"오늘 남은 일정이 없습니다.",nosrc:"일정 소스 없음 — Exchange 계정 또는 ICS 링크를 등록하세요.",
 recheck:"일정 소스 다시 확인",retry:"다시 연결",checking:"확인 중…",
 hint:"크기 조절: 가장자리 드래그 · 이동: 상단 띠 드래그",imp:"8시에 일정을 할 일로 가져오기",pet:"데스크톱 고양이 펫",walk:"사용 중일 때 패널 위 산책",pets:"고양이",edit:"수정",del:"삭제",catchg:"카테고리 변경",hide:"목록에서 지우기",pomo:"포모도로",focus:"집중",brk:"휴식",start:"시작",pause:"일시정지",resume:"계속",reset:"종료(리셋)",pw:"집중",pb:"휴식",ptoday:"오늘 완료한 포모도로",min:"분"},
 en:{cal:"Today's schedule",todo:"To do",done:"Done today",inp:"Type and press Enter",
 dash:"Dashboard",retro:"Daily retro",rcal:"Refresh calendar",quit:"Quit",set:"Settings",
-lang:"Language",op:"Opacity",close:"Done",noopen:"Nothing open — add something light.",
+lang:"Language",op:"Opacity",acc:"Accent color",close:"Done",noopen:"Nothing open — add something light.",
 noev:"No more events today.",nosrc:"No calendar source — add an Exchange account or ICS link.",
 recheck:"Re-check calendar source",retry:"Reconnect",checking:"Checking…",
 hint:"Resize: drag edges · Move: drag the top strip",imp:"Import events as todos at 8 AM",pet:"Desktop cat pet",walk:"Walk on the panel while active",pets:"Cats",edit:"Edit",del:"Delete",catchg:"Change category",hide:"Remove from list",pomo:"Pomodoro",focus:"Focus",brk:"Break",start:"Start",pause:"Pause",resume:"Resume",reset:"Stop (reset)",pw:"Focus",pb:"Break",ptoday:"Pomodoros today",min:"min"}};
@@ -256,19 +258,28 @@ document.getElementById("f_retro").textContent=t.retro;
 document.getElementById("l_set").textContent=t.set;
 document.getElementById("l_lang").textContent=t.lang;
 document.getElementById("l_op").textContent=t.op;
+document.getElementById("l_acc").textContent=t.acc;
 document.getElementById("l_hint").textContent=t.hint;
 document.getElementById("l_imp").textContent=t.imp;
 document.getElementById("l_pet").textContent=t.pet;
 document.getElementById("l_walk").textContent=t.walk;
 document.getElementById("l_pets").textContent=t.pets;
-document.getElementById("setclose").textContent=t.close;
 document.getElementById("l_pomo").textContent=t.pomo;
 document.getElementById("l_pw").textContent=t.pw;
 document.getElementById("l_pb").textContent=t.pb;
 document.getElementById("l_m1").textContent=t.min;
 document.getElementById("l_m2").textContent=t.min;
 pomoUI()}
+const ACCENTS=["#2E6E5E","#3A6EA5","#7A5AA6","#C25B4A","#B8862B","#5B6770"];
 function render(s){S=s;const t=T();labels();
+document.documentElement.style.setProperty("--acc",s.settings.accent||"#2E6E5E");
+const ap=document.getElementById("accpick");
+if(!ap.childElementCount){ACCENTS.forEach(c=>{const b=el("span","sw");b.style.background=c;b.dataset.c=c;
+b.onclick=()=>post({action:"setting",key:"accent",value:c});ap.appendChild(b)});
+const ci=document.createElement("input");ci.type="color";ci.id="acccustom";
+ci.onchange=e=>post({action:"setting",key:"accent",value:e.target.value});ap.appendChild(ci)}
+ap.querySelectorAll(".sw").forEach(b=>b.classList.toggle("sel",b.dataset.c===(s.settings.accent||"#2E6E5E")));
+document.getElementById("acccustom").value=s.settings.accent||"#2E6E5E";
 document.getElementById("date").textContent=s.date_label;
 document.getElementById("langsel").value=s.settings.lang;
 const op=document.getElementById("op");
@@ -324,8 +335,6 @@ document.getElementById("set").hidden=true};
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){
 document.getElementById("set").hidden=true;
 document.getElementById("pomo").hidden=true}});
-document.getElementById("setclose").onclick=()=>{
-document.getElementById("set").hidden=true};
 document.getElementById("langsel").onchange=e=>{
 post({action:"setting",key:"lang",value:e.target.value})};
 document.getElementById("walkchk").onchange=e=>{

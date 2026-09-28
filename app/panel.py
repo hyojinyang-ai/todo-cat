@@ -107,7 +107,16 @@ def get_settings():
             "pomo_break": int(c.get("pomo_break", 5)),
             "pet_enabled": bool(c.get("pet_enabled", True)),
             "pet_walk": bool(c.get("pet_walk", True)),
-            "pets": [k for k in c.get("pets", DEFAULT_PETS) if k in PETS] or DEFAULT_PETS}
+            "pets": [k for k in c.get("pets", DEFAULT_PETS) if k in PETS] or DEFAULT_PETS,
+            "accent": _hex(c.get("accent"), "#2E6E5E")}
+
+
+def _hex(v, default):
+    v = str(v or "")
+    try:
+        return v if len(v) == 7 and v[0] == "#" and int(v[1:], 16) >= 0 else default
+    except ValueError:
+        return default
 
 
 def set_setting(k, v):
