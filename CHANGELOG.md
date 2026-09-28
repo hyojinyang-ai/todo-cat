@@ -4,6 +4,7 @@ Everything here was built pair-programming with Claude. Dates are actual working
 
 ## 2026-09-28
 ### Changed
+- **No duplicate schedule entries.** A calendar event that was already imported as a to-do no longer reappears in "Today's schedule" when its calendar ID changes on re-sync: events are matched by title (and time) against today's to-dos and against the titles imported at 08:00, not only by ID. The import itself also skips same-title events.
 - **Rule 1 narrowed to the Pomodoro page.** Desktop cats no longer sit down when a Pomodoro starts; they keep sitting/walking/loafing independently of the timer. The singing-bowl cat remains the Pomodoro-page visual.
 ### Added
 - **Choose your cats**: Settings → Cats shows one or more cats on the panel. Cats are auto-discovered: every `assets/pets/<cat>/` folder with a `cat.png` is a cat (name from the folder, window size from the widest frame, optional `pomo.png`). Only Sprout ships with the repo; other folders are git-ignored so cat packs can be dropped in. Each cat has its own window, position, direction and loaf state.

@@ -12,6 +12,9 @@
 - Dock launches the executable with **no arguments** → the executable must be a wrapper that supplies `panel.py`.
 - Graph API device-code login can be blocked by corporate Conditional Access (AADSTS 53003, unregistered device). Use Exchange in macOS Calendar + EventKit, or an ICS publish URL.
 
+## Calendar
+- EventKit `eventIdentifier` values can change between fetches after an Exchange re-sync (2 of 7 events in one day). Never rely on the ID alone to hide an imported event — match on normalised title (+ time) too (`event_matches_todo`, `imported_today()`).
+
 ## Windows
 - `hidesOnDeactivate` defaults True for NSPanel → set False or the window vanishes.
 - WKWebView swallows drags → leave a native strip (inset the webview) for moving the window.

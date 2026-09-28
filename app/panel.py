@@ -259,16 +259,42 @@ def fetch_events_eventkit(interactive):
     return out
 
 
+def _norm(s):
+    return " ".join(str(s).split()).casefold()
+
+
+def todo_titles_today(db):
+    """Normalised titles of to-dos created today — used to hide calendar events that already exist as tasks."""
+    today = date.today()
+    out = set()
+    for x in db["tasks"]:
+        try:
+            if d_of(x["created_at"]) != today:
+                continue
+        except Exception:
+            continue
+        out.add(_norm(x["title"]))
+    return out
+
+
+def event_matches_todo(ev, titles):
+    t = _norm(ev.get("title", ""))
+    return t in titles or _norm(f'{ev.get("time", "")} {ev.get("title", "")}') in titles
+
+
 def build_state(cal_status):
     db = todo.load()
     open_t, done_t, total = todo.today_stats(db)
     t = date.today()
     est = ev_state()
+    titles = todo_titles_today(db)
+    _, imp_titles = imported_today()
     events = []
     for ev in cached_events():
         s = est.get(ev["id"], "")
-        if s == "hidden":
-            continue
+        if (s == "hidden" or event_matches_todo(ev, titles)
+                or _norm(ev["title"]) in imp_titles):
+            continue   # already imported as a to-do → not a separate schedule entry
         events.append({**ev, "done": s == "done"})
     cfg = get_settings()
     if cfg["lang"] == "en":
@@ -336,14 +362,29 @@ def do_fetch(interactive=False):
         return "none"
 
 
+def imported_today():
+    imp = jload(IMPORTED, {})
+    if imp.get("date") != date.today().isoformat():
+        return set(), set()
+    return set(imp.get("ids", [])), set(imp.get("titles", []))
+
+
+def load_db_for_import():
+    return todo.load()
+
+
 def import_events_as_todos():
     t = date.today().isoformat()
     imp = jload(IMPORTED, {})
     ids = set(imp.get("ids", [])) if imp.get("date") == t else set()
     est = ev_state()
+    titles = todo_titles_today(load_db_for_import())
+    _, imp_titles = imported_today()
     for ev in cached_events():
-        if ev["id"] in ids or ev["id"] in est:
+        if (ev["id"] in ids or ev["id"] in est or event_matches_todo(ev, titles)
+                or _norm(ev["title"]) in imp_titles):
             continue
+        imp_titles.add(_norm(ev["title"]))
         prefix = (ev["time"] + " ") if ev["time"] else ""
         mins = None
         try:
@@ -356,7 +397,7 @@ def import_events_as_todos():
         todo.add(prefix + ev["title"], "Meeting", mins)
         set_ev_state(ev["id"], "hidden")
         ids.add(ev["id"])
-    jsave(IMPORTED, {"date": t, "ids": sorted(ids)})
+    jsave(IMPORTED, {"date": t, "ids": sorted(ids), "titles": sorted(imp_titles)})
 
 
 class Pet:
