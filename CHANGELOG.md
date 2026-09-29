@@ -2,6 +2,10 @@
 
 Everything here was built pair-programming with Claude. Dates are actual working days.
 
+## 2026-09-29
+### Added
+- **Drag-and-drop reordering** of the to-do list: grab a row (a ⋮⋮ handle appears on hover) and drop it where you want; the order is saved (`order` field) and survives restarts. New items still land at the top. Completed items are not draggable.
+
 ## 2026-09-28
 ### Added
 - Settings → **Pomodoro → End-of-session sound**: pick any macOS system sound (or None) from a dropdown; the choice previews immediately and there is a ▶ button to replay it. Stored per user in settings; `config.json` `sound` remains the default for new installs.

@@ -73,9 +73,11 @@ def save(db):
 def add(title, cat, minutes=None):
     db = load()
     db["seq"] += 1
+    opens = [sort_key(x) for x in db["tasks"] if not x["done"]]
     task = {"id": db["seq"], "title": title.strip(),
             "category": cat, "created_at": now().isoformat(),
-            "done": False, "done_at": None}
+            "done": False, "done_at": None,
+            "order": (min(opens) - 1) if opens else 0}   # new items go to the top
     if minutes:
         task["minutes"] = int(minutes)
     db["tasks"].append(task)
@@ -110,6 +112,21 @@ def set_title(tid, title):
     if t and title.strip():
         t["title"] = title.strip()
         save(db)
+
+
+def sort_key(x):
+    """Manual order; tasks created before ordering existed fall back to newest-first."""
+    return x.get("order", -x["id"])
+
+
+def set_order(ids):
+    """Persist a new order for the open list (ids top → bottom)."""
+    db = load()
+    pos = {int(i): n for n, i in enumerate(ids)}
+    for x in db["tasks"]:
+        if x["id"] in pos:
+            x["order"] = pos[x["id"]]
+    save(db)
 
 
 def set_category(tid, cat):

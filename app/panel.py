@@ -346,7 +346,7 @@ def build_state(cal_status):
         "pet_list": [[k, v[0]] for k, v in PETS.items()],
         "sounds": SOUNDS,
         "open": [{"id": x["id"], "title": x["title"], "cat": x["category"]}
-                 for x in sorted(open_t, key=lambda x: x["id"], reverse=True)],
+                 for x in sorted(open_t, key=todo.sort_key)],
         "closed": [{"id": x["id"], "title": x["title"], "cat": x["category"]}
                    for x in done_t]}
 
@@ -620,6 +620,8 @@ class Bridge(NSObject):
             self.push()
         elif a == "delete":
             todo.delete(int(b["id"])); self.push()
+        elif a == "reorder":
+            todo.set_order([int(i) for i in b.get("ids", [])]); self.push()
         elif a == "cat":
             todo.set_category(int(b["id"]), str(b["cat"])); self.push()
         elif a == "title":

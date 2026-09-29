@@ -26,7 +26,7 @@
 Single file. `L = {ko:{…}, en:{…}}`, `T()` current strings, `labels()` static labels, `render(state)` rebuilds lists. Pages toggled with `hidden` — CSS has `#set[hidden],#pomo[hidden]{display:none!important}` (plain `display:flex` would override `hidden`). Pomodoro state `P` lives in JS; posts `pomo_title` each tick and `pomo_done` on finish. Activity ping throttled to 5 s.
 
 ## app/todo.py
-- `CATS` order = dropdown order. `add(title, cat, minutes=None)`, `set_done`, `delete`, `set_title`, `set_category`.
+- `CATS` order = dropdown order. Open list is sorted by `sort_key()` (manual `order`, fallback newest-first); `set_order(ids)` persists a drag-and-drop reorder. `add(title, cat, minutes=None)`, `set_done`, `delete`, `set_title`, `set_category`.
 - Obsidian writers: `write_daily_log(day)` (WORK SESSIONS/FOCUS/UNFINISHED/NEXT STEPS/RETRO, ko·en), `write_monthly_page`, `write_dashboard` (30-day stats, category bars, heatmap embed, timeline), `write_heatmap_svg(weeks=16)`.
 - `retro(kind)` → `claude -p` once, bilingual output, keeps `## ✍️ 내 노트` on regeneration. `run_eod()` = retro + write_daily_log. `dashboard()` refreshes then opens `obsidian://open?vault=HJ&file=Tracker/Dashboard`.
 - Retro section extraction: `retro_section(day, ["요약"])`, `["Summary"]`, `["다음 기간 제안"]`, `["Suggestions for next period"]`.
