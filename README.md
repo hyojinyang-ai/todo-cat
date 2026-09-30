@@ -60,7 +60,7 @@ Every folder in `assets/pets/` that contains a `cat.png` shows up in Settings �
 
 A cat folder holds (all RGBA PNG, each with a mirrored `_flip` copy): `cat`, `pet_alert`, `pet_happy` (sitting + expressions) and `walk1..8` (walking right). Optional: `loaf1..8` (sitting → loaf; without them the cat just keeps sitting) and `pomo.png` (shown during a Pomodoro; without it the cat just sits). The pet window is 108 pt tall and as wide as the widest frame.
 
-To build Sprout-style frames from artwork: `python3 tools/mksit.py <sitting-cat.png> <cat>` and `python3 tools/mkframes.py <walk-sprite-sheet.png> <cat>` (8 frames in a row, walking right). White backgrounds become transparent automatically. `python3 tools/mkloaf.py assets/pets/<cat>` synthesises loaf frames from the sitting image if you have no loaf artwork. Both tools have the frame/eye positions of Sprout's source artwork hard-coded — measure yours and adjust them.
+To build Sprout-style frames from artwork: `python3 tools/mksit.py <sitting-cat.png> <cat>` and `python3 tools/mkframes.py <walk-sprite-sheet.png> <cat>` (8 frames in a row, walking right). White backgrounds become transparent automatically. Both tools have the frame/eye positions of Sprout's source artwork hard-coded — measure yours and adjust them.
 
 ## Maintaining with Claude
 `skill/todo-cat/` is a Claude skill (Claude.ai Projects / Claude Code). Loaded in a fresh conversation, Claude already knows the install and deploy procedure, the architecture and the list of pitfalls.
