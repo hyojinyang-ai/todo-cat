@@ -2,6 +2,10 @@
 
 Everything here was built pair-programming with Claude. Dates are actual working days.
 
+## 2026-09-30
+### Added
+- **Sprout loafs too.** `tools/mkloaf.py` synthesises 8 loaf frames from any cat's sitting image (eases down to 70 % height / 114 % width, feet anchored); Sprout now settles after 5 idle minutes like the other cats. Hand-drawn frames can replace them any time — same file names.
+
 ## 2026-09-29
 ### Added
 - **Drag-and-drop reordering** of the to-do list: grab a row (a ⋮⋮ handle appears on hover) and drop it where you want; the order is saved (`order` field) and survives restarts. New items still land at the top. Completed items are not draggable.
