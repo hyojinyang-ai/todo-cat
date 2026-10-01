@@ -2,6 +2,11 @@
 
 Everything here was built pair-programming with Claude. Dates are actual working days.
 
+## 2026-10-01
+### Changed
+- **Panel is a normal window by default** — it goes behind whatever app you click and comes forward when you click it or its Dock icon. New Settings → Appearance → *Always on top* toggle restores the floating behaviour.
+- **Cats follow the panel**: they are child windows now, so closing (✕) or minimizing the panel hides them and reopening brings them back; they still render above the panel.
+
 ## 2026-09-29
 ### Added
 - **Drag-and-drop reordering** of the to-do list: grab a row (a ⋮⋮ handle appears on hover) and drop it where you want; the order is saved (`order` field) and survives restarts. New items still land at the top. Completed items are not draggable.

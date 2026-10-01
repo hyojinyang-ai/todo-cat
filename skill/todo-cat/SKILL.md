@@ -13,7 +13,7 @@ Open-source personal productivity app (GitHub `hyojinyang-ai/todo-cat`), usually
 3. Obsidian output (Daily Log, Dashboard, retro) is bilingual ko/en; the UI follows the language setting.
 
 ## What it is (30 seconds)
-- **Floating panel** (`app/panel.py` + `app/panel.html`): always-on-top, all Spaces, non-activating. Pages: Todo / Pomodoro / Settings (ko·en).
+- **Floating panel** (`app/panel.py` + `app/panel.html`): normal window level by default (*Always on top* is a setting), all Spaces, non-activating; cat windows are its child windows. Pages: Todo / Pomodoro / Settings (ko·en).
 - **Data core** (`app/todo.py`): tasks in `<vault>/Tracker/tasks.json` (vault from `config.json`); writes Obsidian **Daily Log / Monthly / Dashboard / Retros**.
 - **Automation** (scheduler thread in `app/panel.py`): 08:00 Outlook events → Meeting todos; 18:00 bilingual AI retro + log/dashboard refresh; midnight rollover; 15-min calendar refresh.
 - **Cat pets**: one transparent window per chosen cat (Settings → Cats) above the panel; sits when idle, walks 60 s after any interaction, loafs after `loaf_after`; expressions on add/done. Cats are auto-discovered from `assets/pets/<cat>/` (only `sprout/` ships; other folders are git-ignored cat packs).

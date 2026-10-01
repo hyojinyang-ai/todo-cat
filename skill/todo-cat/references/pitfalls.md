@@ -19,7 +19,7 @@
 - `hidesOnDeactivate` defaults True for NSPanel → set False or the window vanishes.
 - WKWebView swallows drags → leave a native strip (inset the webview) for moving the window.
 - Close button is disabled unless `NSWindowStyleMaskClosable` is in the mask.
-- Pet must be `NSFloatingWindowLevel + 1` or the panel covers its feet when clicked.
+- Pets are child windows of the panel (`NSWindowAbove`) so they stay above it and hide/show/minimise with it; don't give them a separate level — it must match the panel's.
 - Two displays: compute pet position from the panel's frame and clamp to that screen's `visibleFrame`; first spawn on "main screen" was invisible to the user.
 
 ## Images

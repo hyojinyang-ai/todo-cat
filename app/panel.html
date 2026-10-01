@@ -165,6 +165,8 @@ vertical-align:middle;margin-left:8px;cursor:pointer}
 <div class="srow"><div class="rl"><b id="l_lang"></b><small id="d_lang"></small></div>
 <div class="seg" id="langseg"><span data-v="ko">한국어</span><span data-v="en">English</span></div></div>
 <div class="srow"><div class="rl"><b id="l_acc"></b><small id="d_acc"></small></div><span id="accpick"></span></div>
+<div class="srow"><div class="rl"><b id="l_top"></b><small id="d_top"></small></div>
+<input type="checkbox" class="tg" id="topchk"></div>
 <div class="srow"><div class="rl"><b id="l_op"></b><small id="d_op"></small></div>
 <span class="rc"><input type="range" id="op" min="50" max="100" step="5"><span id="opv"></span></span></div>
 </div></div>
@@ -208,13 +210,13 @@ vertical-align:middle;margin-left:8px;cursor:pointer}
 let S=null,sel="Design";
 const L={ko:{cal:"오늘 일정",todo:"할 일",done:"오늘 완료",inp:"새 항목 입력 후 Enter",
 dash:"대시보드",retro:"Daily 회고",rcal:"일정 새로고침",quit:"종료",set:"설정",
-lang:"언어",d_lang:"패널·메뉴바·로그 라벨 언어",op:"투명도",d_op:"패널 창의 불투명도",acc:"포인트 색",d_acc:"체크박스·강조·히트맵 색",close:"완료",h_appear:"모양",h_sess:"세션",h_pomo:"포모도로",snd:"세션 종료 알림음",d_snd:"macOS 시스템 사운드 · 선택하면 미리 들립니다",snd_none:"없음",d_pw:"집중 세션 길이",d_pb:"세션 사이 휴식 길이",d_ptoday:"횟수 · 집중한 시간",h_cal:"캘린더",h_cat:"고양이",d_imp:"오늘 일정이 회의 카테고리 할 일로 들어옵니다",d_pet:"패널 위에 고양이를 표시합니다",d_pets:"표시할 고양이 (assets/pets 폴더에서 자동 인식)",d_walk:"패널을 사용한 뒤 60초 동안 걷습니다",noopen:"열린 항목 없음 — 가볍게 하나 추가해보세요.",
+lang:"언어",d_lang:"패널·메뉴바·로그 라벨 언어",op:"투명도",d_op:"패널 창의 불투명도",acc:"포인트 색",d_acc:"체크박스·강조·히트맵 색",close:"완료",h_appear:"모양",top:"항상 위에 표시",d_top:"끄면 다른 앱을 클릭할 때 뒤로 갑니다",h_sess:"세션",h_pomo:"포모도로",snd:"세션 종료 알림음",d_snd:"macOS 시스템 사운드 · 선택하면 미리 들립니다",snd_none:"없음",d_pw:"집중 세션 길이",d_pb:"세션 사이 휴식 길이",d_ptoday:"횟수 · 집중한 시간",h_cal:"캘린더",h_cat:"고양이",d_imp:"오늘 일정이 회의 카테고리 할 일로 들어옵니다",d_pet:"패널 위에 고양이를 표시합니다",d_pets:"표시할 고양이 (assets/pets 폴더에서 자동 인식)",d_walk:"패널을 사용한 뒤 60초 동안 걷습니다",noopen:"열린 항목 없음 — 가볍게 하나 추가해보세요.",
 noev:"오늘 남은 일정이 없습니다.",nosrc:"일정 소스 없음 — Exchange 계정 또는 ICS 링크를 등록하세요.",
 recheck:"일정 소스 다시 확인",retry:"다시 연결",checking:"확인 중…",
 hint:"크기 조절: 가장자리 드래그 · 이동: 상단 띠 드래그",imp:"8시에 일정을 할 일로 가져오기",pet:"데스크톱 고양이 펫",walk:"사용 중일 때 패널 위 산책",pets:"고양이",edit:"수정",del:"삭제",catchg:"카테고리 변경",hide:"목록에서 지우기",pomo:"포모도로",focus:"집중",brk:"휴식",start:"시작",pause:"일시정지",resume:"계속",reset:"종료(리셋)",pw:"집중",pb:"휴식",ptoday:"오늘 완료한 포모도로",min:"분"},
 en:{cal:"Today's schedule",todo:"To do",done:"Done today",inp:"Type and press Enter",
 dash:"Dashboard",retro:"Daily retro",rcal:"Refresh calendar",quit:"Quit",set:"Settings",
-lang:"Language",d_lang:"Panel, menu bar and log labels",op:"Opacity",d_op:"Transparency of the panel window",acc:"Accent color",d_acc:"Checkboxes, highlights and the heatmap",close:"Done",h_appear:"Appearance",h_sess:"Session",h_pomo:"Pomodoro",snd:"End-of-session sound",d_snd:"macOS system sounds · previews when selected",snd_none:"None",d_pw:"Length of a focus session",d_pb:"Break between sessions",d_ptoday:"Sessions · minutes focused",h_cal:"Calendar",h_cat:"Cat",d_imp:"Today's events become Meeting to-dos",d_pet:"Show the cat on top of the panel",d_pets:"Which cats to show (found in assets/pets)",d_walk:"Walks for 60 s after you use the panel",noopen:"Nothing open — add something light.",
+lang:"Language",d_lang:"Panel, menu bar and log labels",op:"Opacity",d_op:"Transparency of the panel window",acc:"Accent color",d_acc:"Checkboxes, highlights and the heatmap",close:"Done",h_appear:"Appearance",top:"Always on top",d_top:"Off: goes behind the app you click",h_sess:"Session",h_pomo:"Pomodoro",snd:"End-of-session sound",d_snd:"macOS system sounds · previews when selected",snd_none:"None",d_pw:"Length of a focus session",d_pb:"Break between sessions",d_ptoday:"Sessions · minutes focused",h_cal:"Calendar",h_cat:"Cat",d_imp:"Today's events become Meeting to-dos",d_pet:"Show the cat on top of the panel",d_pets:"Which cats to show (found in assets/pets)",d_walk:"Walks for 60 s after you use the panel",noopen:"Nothing open — add something light.",
 noev:"No more events today.",nosrc:"No calendar source — add an Exchange account or ICS link.",
 recheck:"Re-check calendar source",retry:"Reconnect",checking:"Checking…",
 hint:"Resize: drag edges · Move: drag the top strip",imp:"Import events as todos at 8 AM",pet:"Desktop cat pet",walk:"Walk on the panel while active",pets:"Cats",edit:"Edit",del:"Delete",catchg:"Change category",hide:"Remove from list",pomo:"Pomodoro",focus:"Focus",brk:"Break",start:"Start",pause:"Pause",resume:"Resume",reset:"Stop (reset)",pw:"Focus",pb:"Break",ptoday:"Pomodoros today",min:"min"}};
@@ -286,7 +288,7 @@ document.getElementById("l_lang").textContent=t.lang;
 document.getElementById("l_op").textContent=t.op;
 document.getElementById("l_acc").textContent=t.acc;
 document.getElementById("l_hint").textContent=t.hint;
-["h_appear","h_cal","h_cat","h_sess","h_pomo","l_snd","d_snd","d_lang","d_op","d_acc","d_imp","d_pet","d_pets","d_walk","d_pw","d_pb","d_ptoday"]
+["h_appear","h_cal","h_cat","h_sess","h_pomo","l_snd","d_snd","l_top","d_top","d_lang","d_op","d_acc","d_imp","d_pet","d_pets","d_walk","d_pw","d_pb","d_ptoday"]
 .forEach(k=>{const e=document.getElementById(k);if(e)e.textContent=t[k]||t[k.replace(/^l_/,"")]||""});
 document.getElementById("l_imp").textContent=t.imp;
 document.getElementById("l_pet").textContent=t.pet;
@@ -321,6 +323,7 @@ const op=document.getElementById("op");
 if(document.activeElement!==op)op.value=Math.round(s.settings.opacity*100);
 document.getElementById("opv").textContent=op.value+"%";
 document.getElementById("impchk").checked=!!s.settings.import_events;
+document.getElementById("topchk").checked=!!s.settings.always_on_top;
 document.getElementById("petchk").checked=!!s.settings.pet_enabled;
 document.getElementById("walkchk").checked=!!s.settings.pet_walk;
 const pp=document.getElementById("petpick");
@@ -399,6 +402,8 @@ document.getElementById("walkchk").onchange=e=>{
 post({action:"setting",key:"pet_walk",value:e.target.checked})};
 document.getElementById("petchk").onchange=e=>{
 post({action:"setting",key:"pet_enabled",value:e.target.checked})};
+document.getElementById("topchk").onchange=e=>{
+post({action:"setting",key:"always_on_top",value:e.target.checked})};
 document.getElementById("impchk").onchange=e=>{
 post({action:"setting",key:"import_events",value:e.target.checked})};
 document.getElementById("op").oninput=e=>{

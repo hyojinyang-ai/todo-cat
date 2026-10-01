@@ -1,7 +1,7 @@
 # todo-cat — project instructions
 
 ## What this is
-A stress-free To-Do app for macOS: floating panel (normal window by default, *Always on top* optional) + Outlook events imported at 08:00 as Meeting tasks
+A stress-free To-Do app for macOS: always-on-top floating panel + Outlook events imported at 08:00 as Meeting tasks
 + Pomodoro + Obsidian Daily Log / Monthly / Dashboard / AI retro + a cat pet walking along the panel. Python (pyobjc) + WKWebView.
 Reply in the user's language, concisely. When a request has several readings, offer options.
 
@@ -11,23 +11,23 @@ Reply in the user's language, concisely. When a request has several readings, of
 3. Obsidian output (Daily Log, Dashboard, retro) is bilingual ko/en; the UI follows the language setting.
 
 ## Locations
-- Code: `~/.claude-todo/` (clone of GitHub `hyojinyang-ai/todo-cat`)
+- Code: `~/.Codex-todo/` (clone of GitHub `hyojinyang-ai/todo-cat`)
 - App bundle: `~/Applications/To-Do.app` (`To-Do` = zsh wrapper → `To-Do-bin` = copy of the Python GUI binary; bundle id `com.todocat.app`)
 - Login item: `~/Library/LaunchAgents/com.todocat.panel.plist`
 - Config: `config.json` at repo root (vault_path, vault_name, lang, import_hour, eod_hour, claude_bin) — created by `install/setup.sh`, git-ignored
-- Data (not in repo): `<vault>/Tracker/tasks.json`, `Tracker/{Log,Monthly,Retros}/`, `Dashboard.md`; settings/caches `~/.claude-todo/state/`
+- Data (not in repo): `<vault>/Tracker/tasks.json`, `Tracker/{Log,Monthly,Retros}/`, `Dashboard.md`; settings/caches `~/.Codex-todo/state/`
 - Source images live in `~/Downloads`; ask for the path and process on the Mac. Never move pixels through chat (base64 corrupted files twice, wastes tokens).
 
 ## Files (repo layout: `app/` code · `assets/pets/<cat>/` images (one folder per cat, auto-discovered; only `sprout/` is tracked) · `tools/` generators · `install/` bundle + setup · `state/` runtime, ignored)
 - `app/panel.py` app: `Bridge` (JS↔Python actions), panel + pet windows, status item, main menu, `walker()` (pet), `scheduler()` (midnight rollover · 08:00 import · 18:00 end-of-day · 15-min calendar refresh)
 - `app/panel.html` single-file UI (asset URLs are `../assets/...`): three pages (todo / pomodoro / settings), `L` object for ko·en i18n, `post({action})` → Python, `render(state)` ← Python
-- `app/todo.py` data core + `write_daily_log` / `write_monthly_page` / `write_dashboard` / `write_heatmap_svg` + `retro()` (`claude -p`, bilingual) + `run_eod()` + `dashboard()`. Categories in `CATS` (name → (color, Korean label)); vault/schedule from `CFG`
+- `app/todo.py` data core + `write_daily_log` / `write_monthly_page` / `write_dashboard` / `write_heatmap_svg` + `retro()` (`Codex -p`, bilingual) + `run_eod()` + `dashboard()`. Categories in `CATS` (name → (color, Korean label)); vault/schedule from `CFG`
 - `tools/mkframes.py` sprite sheet → 16 walk frames · `tools/mksit.py` sitting cat + expressions · `install/setup.sh` reinstall
 
 ## Change → deploy (always this order)
 ```
-python3 -m py_compile ~/.claude-todo/app/panel.py ~/.claude-todo/app/todo.py
-pkill -f panel.py; sleep 1; rm -f ~/.claude-todo/state/panel.pid
+python3 -m py_compile ~/.Codex-todo/app/panel.py ~/.Codex-todo/app/todo.py
+pkill -f panel.py; sleep 1; rm -f ~/.Codex-todo/state/panel.pid
 launchctl kickstart gui/$(id -u)/com.todocat.panel
 ```
 (or `skill/todo-cat/scripts/deploy.sh`)
@@ -43,11 +43,11 @@ launchctl kickstart gui/$(id -u)/com.todocat.panel
 ## Known pitfalls
 - **RGBA PNG only.** Palette (P) PNGs lose their alpha on macOS. To shrink, quantize RGB and re-attach the original alpha.
 - **No SVG via NSImage** — fills are ignored, you get a silhouette. Draw with NSBezierPath or use PNG.
-- macOS 14+ calendar permission needs a usage description in Info.plist **and** the request must come from the launchd-run bundle (TCC "responsible process"). Requests from a terminal or Claude-spawned process are silently denied.
+- macOS 14+ calendar permission needs a usage description in Info.plist **and** the request must come from the launchd-run bundle (TCC "responsible process"). Requests from a terminal or Codex-spawned process are silently denied.
 - `exec` into a binary outside the bundle strips the app identity → keep the binary copy inside the bundle. The Dock launches the executable with no arguments → the executable must be a wrapper.
 - Verify images by pixels: composite on a checkerboard, `sips -Z 700`, then `read_file`.
 - Dock/menu bar need `NSApplicationActivationPolicyRegular`; the panel is a NonactivatingPanel, so clicking it does not switch the menu bar (activate via the Dock icon).
-- Pet windows are **child windows** of the panel (`addChildWindow_ordered_(…, NSWindowAbove)`): hidden/shown/minimised with it and always drawn above it. Window level follows the *Always on top* setting (Normal by default, Floating when on).
+- Pet window at `NSFloatingWindowLevel + 1` so its feet are not covered; position relative to the panel and clamp to that screen's visible frame.
 
 ## Cost awareness
 Running the app: 0 tokens. One AI retro ≈ $0.05–0.10. Development chats are the whole cost → small changes in short fresh conversations.

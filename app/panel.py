@@ -25,6 +25,7 @@ from AppKit import (NSApplication, NSApplicationActivationPolicyRegular,
                     NSImage, NSMenu, NSMenuItem, NSStatusBar,
                     NSVariableStatusItemLength,
                     NSBackingStoreBuffered, NSColor, NSFloatingWindowLevel,
+                    NSNormalWindowLevel, NSWindowAbove,
                     NSMakeRect, NSPanel, NSScreen,
                     NSWindowCollectionBehaviorCanJoinAllSpaces,
                     NSWindowCollectionBehaviorFullScreenAuxiliary,
@@ -129,7 +130,8 @@ def get_settings():
             "pet_walk": bool(c.get("pet_walk", True)),
             "pets": [k for k in c.get("pets", DEFAULT_PETS) if k in PETS] or DEFAULT_PETS,
             "accent": _hex(c.get("accent"), "#2E6E5E"),
-            "sound": str(c.get("sound", todo.CFG.get("sound", "Purr")))}
+            "sound": str(c.get("sound", todo.CFG.get("sound", "Purr"))),
+            "always_on_top": bool(c.get("always_on_top", False))}
 
 
 def _hex(v, default):
@@ -645,6 +647,14 @@ class Bridge(NSObject):
             if k == "opacity":
                 AppHelper.callAfter(
                     lambda: self.panel.setAlphaValue_(float(v)))
+            if k == "always_on_top":
+                lvl = NSFloatingWindowLevel if v else NSNormalWindowLevel
+
+                def relevel():
+                    self.panel.setLevel_(lvl)
+                    for q in self.pets:
+                        q.win.setLevel_(lvl)
+                AppHelper.callAfter(relevel)
             if k == "pet_walk":
                 for p in self.pets:
                     AppHelper.callAfter(
@@ -723,7 +733,8 @@ def main():
         rect, style, NSBackingStoreBuffered, False)
     panel.setTitle_("")
     panel.setTitlebarAppearsTransparent_(True)
-    panel.setLevel_(NSFloatingWindowLevel)
+    panel.setLevel_(NSFloatingWindowLevel if get_settings()["always_on_top"]
+                    else NSNormalWindowLevel)   # normal window: goes behind the app you click
     panel.setCollectionBehavior_(NSWindowCollectionBehaviorCanJoinAllSpaces |
                                  NSWindowCollectionBehaviorFullScreenAuxiliary)
     panel.setHidesOnDeactivate_(False)
@@ -860,12 +871,13 @@ def main():
             NSBackingStoreBuffered, False)
         pet.setOpaque_(False)
         pet.setBackgroundColor_(NSColor.clearColor())
-        pet.setLevel_(NSFloatingWindowLevel + 1)  # always above the panel
+        pet.setLevel_(panel.level())
         pet.setCollectionBehavior_(NSWindowCollectionBehaviorCanJoinAllSpaces |
                                    NSWindowCollectionBehaviorFullScreenAuxiliary)
         pet.setHidesOnDeactivate_(False)
         pet.setMovableByWindowBackground_(not get_settings()["pet_walk"])
         pet.setHasShadow_(False)
+        panel.addChildWindow_ordered_(pet, NSWindowAbove)   # follows close/minimise/reopen, stays above the panel
         autosave = "catPet3" if i == 0 else f"catPet3_{key}"   # default cat keeps its saved spot
         if pet.setFrameUsingName_(autosave):
             sf = pet.frame()
