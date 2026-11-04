@@ -4,6 +4,7 @@
 todo-cat floating panel — always-on-top To-Do + today's calendar events + cat pet.
 Data: <vault>/Tracker/tasks.json (vault from config.json, shared with todo.py)
 """
+import fcntl
 import json
 import objc
 import os
@@ -708,13 +709,17 @@ class Panel(NSPanel):
 
 def main():
     HOME.mkdir(exist_ok=True)
-    if PIDFILE.exists():
-        try:
-            os.kill(int(PIDFILE.read_text().strip()), 0)
-            sys.exit(0)  # already running — keep the existing instance
-        except (ValueError, ProcessLookupError, PermissionError):
-            pass
-    PIDFILE.write_text(str(os.getpid()))
+    pidfile = PIDFILE.open("a+")
+    try:
+        fcntl.flock(pidfile, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except BlockingIOError:
+        pidfile.close()
+        return
+    # Keep the lock open until the event loop exits; stale or reused PIDs cannot block startup.
+    pidfile.seek(0)
+    pidfile.truncate()
+    pidfile.write(str(os.getpid()))
+    pidfile.flush()
     app = NSApplication.sharedApplication()
     app.setActivationPolicy_(NSApplicationActivationPolicyRegular)
     delegate = AppDelegate.alloc().init()
