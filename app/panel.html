@@ -63,7 +63,7 @@ padding:7px 10px;font:inherit;font-size:12.5px;cursor:pointer;width:100%}
 background:#fff;border-radius:20px;padding:2.5px 9px;font-size:11px;
 cursor:pointer;color:var(--mut)}
 .chip.sel{border-color:var(--ink);color:var(--ink);font-weight:600}
-#addrow{display:flex;gap:0;align-items:stretch;overflow:visible}
+#addrow{display:flex;gap:0;align-items:stretch;overflow:hidden}
 #catsel{font:inherit;font-size:12px;border:0;border-right:1px solid var(--line);
 border-radius:0;background:transparent;padding:0 6px;max-width:96px;color:var(--ink)}
 .catmenu{position:fixed;z-index:99;background:#fff;border:1px solid var(--line);
@@ -72,7 +72,7 @@ min-width:118px}
 .citem{display:flex;align-items:center;gap:7px;padding:5px 9px;
 border-radius:6px;font-size:12px;cursor:pointer}
 .citem:hover{background:var(--soft)}.citem.cur{font-weight:600}
-#inp{flex:1;border:0;border-radius:0;
+#inp{flex:1;min-width:0;border:0;border-radius:0;
 padding:9px 10px;font:inherit;background:transparent;outline:none;
 -webkit-user-select:text;user-select:text}
 #addrow:focus-within{border-color:var(--acc)}

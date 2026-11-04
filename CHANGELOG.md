@@ -4,6 +4,7 @@ Everything here was built pair-programming with Claude. Dates are actual working
 
 ## 2026-11-04
 ### Fixed
+- **Long input stays inside narrow windows.** The new-task input now shrinks with the panel and scrolls long text internally without pushing the category selector or input card outside the window.
 - **App would not open after a stale PID was reused by another process.** Startup now uses an exclusive operating-system file lock instead of checking whether the saved PID exists. The lock is released automatically when the app exits, including after a crash, while duplicate launches still leave the running instance alone.
 
 ## 2026-10-01
