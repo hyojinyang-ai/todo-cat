@@ -449,20 +449,24 @@ class Pet:
         self.loaf = 0          # 0 = not loafing, 1..8 = loaf frame shown
         self.loaf_dir = 0      # +1 settling down, -1 getting up, 0 = still
         self.loaf_next = 0.0
+        self.parked = False
         # (desktop cats are independent of the Pomodoro — rule 1 applies to the Pomodoro page only)
 
     def apply_image(self):
-        if self.state == "idle" and self.loaf:
+        if self.parked:
+            base = "parked"
+        elif self.state == "idle" and self.loaf:
             base = f"loaf{self.loaf}"
         elif self.state == "idle" and self.moving:
             base = f"walk{(self.frame % 8) + 1}"
         else:
             base = self.state
         flip = "_flip" if self.dir < 0 else ""
-        key = base if base == "zen" else base + flip
+        key = base if base in ("zen", "parked") else base + flip
         img = self.imgs.get(key) or self.imgs.get(self.state + flip) or self.imgs.get(self.state)
         if img is not None:
-            AppHelper.callAfter(lambda: self.view.setImage_(img))
+            AppHelper.callAfter(lambda: self.view.setImage_(
+                self.imgs["parked"] if self.parked else img))
 
     def set(self, state, revert_sec=None):
         self.state = state
@@ -516,17 +520,76 @@ class Bridge(NSObject):
             p.set(state, revert_sec)
 
     def show_pets(self):
+        def ui():
+            s = get_settings()
+            visible = self.panel.isVisible() and not self.panel.isMiniaturized()
+            if visible:
+                self.restore_sprout()
+            for p in self.pets:
+                on = s["pet_enabled"] and p.key in s["pets"]
+                if on and visible:
+                    p.win.orderFrontRegardless()
+                elif not p.parked or not on:
+                    p.win.orderOut_(None)
+            if not visible:
+                self.park_sprout()
+        AppHelper.callAfter(ui)
+
+    def park_sprout(self):
         s = get_settings()
         for p in self.pets:
-            on = s["pet_enabled"] and p.key in s["pets"]
-            AppHelper.callAfter(
-                lambda w=p.win, on=on: w.orderFrontRegardless() if on else w.orderOut_(None))
+            if (p.key != "sprout" or not s["pet_enabled"]
+                    or p.key not in s["pets"] or "parked" not in p.imgs):
+                continue
+            if not p.parked:
+                frame = p.win.frame()
+                p.panel_origin = (frame.origin.x, frame.origin.y)
+                p.autosave_name = p.win.frameAutosaveName()
+                # The desktop corner must not overwrite the cat's normal saved position.
+                p.win.setFrameAutosaveName_("")
+                self.panel.removeChildWindow_(p.win)
+                p.parked = True
+                p.moving = False
+                p.loaf = p.loaf_dir = 0
+                p.pause = 0.0
+                p.set("idle")
+            screen = self.panel.screen() or NSScreen.mainScreen()
+            vf, frame = screen.visibleFrame(), p.win.frame()
+            x = max(vf.origin.x, vf.origin.x + vf.size.width - frame.size.width - 16)
+            p.win.setLevel_(NSFloatingWindowLevel)
+            p.win.setMovableByWindowBackground_(False)
+            p.win.setFrameOrigin_((x, vf.origin.y + 16))
+            p.win.orderFrontRegardless()
+
+    def restore_sprout(self):
+        s = get_settings()
+        for p in self.pets:
+            if not p.parked:
+                continue
+            p.parked = False
+            p.win.setLevel_(self.panel.level())
+            p.win.setFrameOrigin_(p.panel_origin)
+            p.win.setFrameAutosaveName_(p.autosave_name)
+            self.panel.addChildWindow_ordered_(p.win, NSWindowAbove)
+            p.win.setMovableByWindowBackground_(not s["pet_walk"])
+            p.set("idle")
+            if s["pet_enabled"] and p.key in s["pets"]:
+                p.win.orderFrontRegardless()
+            else:
+                p.win.orderOut_(None)
+
+    def show_panel(self):
+        if self.panel.isMiniaturized():
+            self.panel.deminiaturize_(None)
+        self.panel.makeKeyAndOrderFront_(None)
+        self.restore_sprout()
 
     def togglePanel_(self, sender):
-        if self.panel.isVisible():
+        if self.panel.isVisible() and not self.panel.isMiniaturized():
+            self.park_sprout()
             self.panel.orderOut_(None)
         else:
-            self.panel.makeKeyAndOrderFront_(None)
+            self.show_panel()
 
     def openDash_(self, sender):
         threading.Thread(target=todo.dashboard, daemon=True).start()
@@ -536,7 +599,7 @@ class Bridge(NSObject):
                          daemon=True).start()
 
     def runjs_(self, code):
-        self.panel.makeKeyAndOrderFront_(None)
+        self.show_panel()
         AppHelper.callAfter(
             lambda: self.webview.evaluateJavaScript_completionHandler_(
                 code, None))
@@ -654,12 +717,12 @@ class Bridge(NSObject):
                 def relevel():
                     self.panel.setLevel_(lvl)
                     for q in self.pets:
-                        q.win.setLevel_(lvl)
+                        q.win.setLevel_(NSFloatingWindowLevel if q.parked else lvl)
                 AppHelper.callAfter(relevel)
             if k == "pet_walk":
                 for p in self.pets:
                     AppHelper.callAfter(
-                        lambda w=p.win: w.setMovableByWindowBackground_(not v))
+                        lambda p=p: p.win.setMovableByWindowBackground_(not v and not p.parked))
             if k in ("pet_enabled", "pets"):
                 self.show_pets()
             self.push()
@@ -694,11 +757,29 @@ class Bridge(NSObject):
 
 class AppDelegate(NSObject):
     panel = objc.ivar()
+    bridge = objc.ivar()
 
     def applicationShouldHandleReopen_hasVisibleWindows_(self, app, flag):
-        if self.panel is not None:
-            self.panel.makeKeyAndOrderFront_(None)
+        if self.bridge is not None:
+            self.bridge.show_panel()
         return True
+
+    def windowWillClose_(self, notification):
+        self.bridge.park_sprout()
+
+    def windowWillMiniaturize_(self, notification):
+        self.bridge.park_sprout()
+
+    def windowDidDeminiaturize_(self, notification):
+        self.bridge.restore_sprout()
+
+    def windowDidBecomeKey_(self, notification):
+        if not self.panel.isMiniaturized():
+            self.bridge.restore_sprout()
+
+    def applicationDidChangeScreenParameters_(self, notification):
+        if self.bridge is not None and any(p.parked for p in self.bridge.pets):
+            self.bridge.park_sprout()
 
 
 class Panel(NSPanel):
@@ -760,6 +841,8 @@ def main():
     bridge = Bridge.alloc().init()
     bridge.panel = panel
     delegate.panel = panel
+    delegate.bridge = bridge
+    panel.setDelegate_(delegate)
     conf = WKWebViewConfiguration.alloc().init()
     conf.userContentController().addScriptMessageHandler_name_(bridge, "app")
     cb = panel.contentView().bounds()
@@ -882,7 +965,7 @@ def main():
         pet.setHidesOnDeactivate_(False)
         pet.setMovableByWindowBackground_(not get_settings()["pet_walk"])
         pet.setHasShadow_(False)
-        panel.addChildWindow_ordered_(pet, NSWindowAbove)   # follows close/minimise/reopen, stays above the panel
+        panel.addChildWindow_ordered_(pet, NSWindowAbove)   # Sprout detaches while the panel is closed/minimised.
         autosave = "catPet3" if i == 0 else f"catPet3_{key}"   # default cat keeps its saved spot
         if pet.setFrameUsingName_(autosave):
             sf = pet.frame()
@@ -903,6 +986,7 @@ def main():
         pv.setImageScaling_(3)  # proportionally up-or-down
         imgs = {}
         for ik, fn in (("idle", "cat.png"), ("alert", "pet_alert.png"),
+                       ("parked", "desktop_loaf.png"),
                        ("happy", "pet_happy.png"),
                        ("idle_flip", "cat_flip.png"),
                        ("alert_flip", "pet_alert_flip.png"),
@@ -948,6 +1032,8 @@ def main():
 
     def step_pet(p, now, loaf_after):
         """One animation tick for one cat."""
+        if p.parked:
+            return
         if now < p.pause:
             if p.moving:
                 p.moving = False
@@ -980,7 +1066,7 @@ def main():
             sy = pf.origin.y + pf.size.height - 5
             if abs(sx - cf.origin.x) > 0.5 or abs(sy - cf.origin.y) > 0.5:
                 AppHelper.callAfter(
-                    lambda w=p.win, x=sx, y=sy: w.setFrameOrigin_((x, y)))
+                    lambda p=p, x=sx, y=sy: p.win.setFrameOrigin_((x, y)) if not p.parked else None)
             return
         if not p.moving:
             p.moving = True
@@ -1009,7 +1095,7 @@ def main():
                     ny = top - cf.size.height
                 break
         AppHelper.callAfter(
-            lambda w=p.win, x=nx, y=ny: w.setFrameOrigin_((x, y)))
+            lambda p=p, x=nx, y=ny: p.win.setFrameOrigin_((x, y)) if not p.parked else None)
     threading.Thread(target=walker, daemon=True).start()
 
     def scheduler():

@@ -47,7 +47,7 @@ launchctl kickstart gui/$(id -u)/com.todocat.panel
 - `exec` into a binary outside the bundle strips the app identity → keep the binary copy inside the bundle. The Dock launches the executable with no arguments → the executable must be a wrapper.
 - Verify images by pixels: composite on a checkerboard, `sips -Z 700`, then `read_file`.
 - Dock/menu bar need `NSApplicationActivationPolicyRegular`; the panel is a NonactivatingPanel, so clicking it does not switch the menu bar (activate via the Dock icon).
-- Pet windows are **child windows** of the panel (`addChildWindow_ordered_(…, NSWindowAbove)`): hidden/shown/minimised with it and always drawn above it. Window level follows the *Always on top* setting (Normal by default, Floating when on).
+- Pet windows are **child windows** of the panel (`addChildWindow_ordered_(…, NSWindowAbove)`) and normally follow its visibility and *Always on top* setting. **Exception: Sprout detaches when the panel closes, minimizes, or is toggled off**, showing `assets/pets/sprout/desktop_loaf.png` at the bottom right of that screen's visible frame. It floats there even with walking disabled, without overwriting its saved normal position. Reopening reattaches it and restores normal behavior; explicit Quit still exits everything. Other cats retain the child-window behavior.
 
 ## Cost awareness
 Running the app: 0 tokens. One AI retro ≈ $0.05–0.10. Development chats are the whole cost → small changes in short fresh conversations.

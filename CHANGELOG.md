@@ -3,6 +3,8 @@
 Everything here was built pair-programming with Claude. Dates are actual working days.
 
 ## 2026-11-04
+### Added
+- **Sprout rests on the desktop when the panel closes or minimizes.** A new transparent loaf pose sits at the bottom right of the panel's screen, clear of the Dock. Reopening restores Sprout's normal position and behavior; other cats and explicit app Quit keep their existing behavior. The new artwork was generated from the existing Sprout reference with the user's approval, not imported from Codex.
 ### Fixed
 - **Long input stays inside narrow windows.** The new-task input now shrinks with the panel and scrolls long text internally without pushing the category selector or input card outside the window.
 - **App would not open after a stale PID was reused by another process.** Startup now uses an exclusive operating-system file lock instead of checking whether the saved PID exists. The lock is released automatically when the app exits, including after a crash, while duplicate launches still leave the running instance alone.
